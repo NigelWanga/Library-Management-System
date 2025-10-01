@@ -9,19 +9,24 @@ public class LibraryTest {
     @Test
     @DisplayName("Check library catalogue size is 20")
     void RESP_01_test_01(){
-        Library library = new Library();
-        library.initializeLibrary();
-        assertEquals(20, library.getCatalogueSize());
-    }
+        InitializeLibrary library = new InitializeLibrary();
+        Catalogue catalogue = library.initializeLibrary();
 
+        int size = catalogue.getCatalogueSize();
+
+        assertEquals(20, size);
+
+
+    }
     @Test
     @DisplayName("Check library catalogue for valid book - Great Gatsby.")
-    void RESP_02_test_02(){
-        Library library = new Library();
-        library.initializeLibrary();
-        Book book = library.getBook(0);
-        assertEquals("Great Gatsby", book.getTitle());
+    void RESP_01_test_02(){
+
+        InitializeLibrary library = new InitializeLibrary();
+        Catalogue catalogue = library.initializeLibrary();
+
+        Book book = catalogue.getBook(0);
+        String title = book.getTitle();
+        assertEquals("Great Gatsby",title);
     }
-
-
 }
