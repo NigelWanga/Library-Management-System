@@ -54,4 +54,44 @@ public class LibraryTest {
         }
 
     }
+
+    @Test
+    @DisplayName("Prompt borrower for authentication details")
+    void RESP_03_test_01(){
+
+        String usernamePrompt = null;
+        String passwordPrompt = null;
+
+        assertEquals("Enter username: ", usernamePrompt);
+        assertEquals("Enter password: ", passwordPrompt);
+    }
+
+    @Test
+    @DisplayName("Permit borrower to input username and password")
+    void RESP_03_test_02(){
+
+        String usernamePermit = null;
+        String passwordPermit = null;
+
+        assertEquals("user1: ", usernamePermit);
+        assertEquals("pass1: ", passwordPermit);
+    }
+
+
+    @Test
+    @DisplayName("Check borrower username and password validity")
+    void RESP_03_test_03(){
+
+        String validUsername = "user1";
+        String validPassword = "pass1";
+
+        String enteredUsername = null;
+        String enteredPassword = null;
+
+        assertEquals(validUsername, enteredUsername);
+        assertEquals(validPassword, enteredPassword);
+
+    }
+
+
 }
