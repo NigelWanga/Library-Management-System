@@ -32,8 +32,8 @@ public class LibraryTest {
     @Test
     @DisplayName("Check borrower accounts size is 3")
     void RESP_02_test_01(){
-        BorrowerRegistry borrowerRegistry = new BorrowerRegistry();
-        borrowerRegistry.initializeBorrowers();
+        InitializeBorrowers borrowers = new InitializeBorrowers();
+        BorrowerRegistry borrowerRegistry = borrowers.initializeBorrowers();
 
         int borrowSize = borrowerRegistry.getBorrowerSize();
 
@@ -44,12 +44,12 @@ public class LibraryTest {
     @Test
     @DisplayName("Check initial books borrowed is 0")
     void RESP_02_test_02(){
-        BorrowerRegistry borrowerRegistry = new BorrowerRegistry();
-        borrowerRegistry.initializeBorrowers();
+        InitializeBorrowers borrowers = new InitializeBorrowers();
+        BorrowerRegistry borrowerRegistry = borrowers.initializeBorrowers();
 
 
         for (Borrower borrower : borrowerRegistry.getAllBorrowers()){
-            int borrowBookSize = borrower.getBorrowedBooksSize();
+            int borrowBookSize = borrower.getBorrowedBooksCount();
             assertEquals(0, borrowBookSize);
         }
 
