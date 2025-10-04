@@ -58,39 +58,47 @@ public class LibraryTest {
     @Test
     @DisplayName("Prompt borrower for authentication details")
     void RESP_03_test_01(){
+        InitializeBorrowers initborrowers = new InitializeBorrowers();
+        BorrowerRegistry registry = initborrowers.initializeBorrowers();
+        Authenticator authSystem = new Authenticator(registry);
 
-        String usernamePrompt = null;
-        String passwordPrompt = null;
+        String[] prompts = authSystem.promptCredentials();
 
-        assertEquals("Enter username: ", usernamePrompt);
-        assertEquals("Enter password: ", passwordPrompt);
+        //expected prompts
+        assertEquals("Enter username: ", prompts[0]);
+        assertEquals("Enter password: ", prompts[1]);
     }
 
     @Test
     @DisplayName("Permit borrower to input username and password")
     void RESP_03_test_02(){
+        InitializeBorrowers initborrowers = new InitializeBorrowers();
+        BorrowerRegistry registry = initborrowers.initializeBorrowers();
+        Authenticator authSystem = new Authenticator(registry);
 
-        String usernamePermit = null;
-        String passwordPermit = null;
+        //input simulation
+        String username = "Spel";
+        String password = "123";
 
-        assertEquals("user1: ", usernamePermit);
-        assertEquals("pass1: ", passwordPermit);
+        String[] inputs = authSystem.captureCredentials(username, password);
+
+        assertEquals("Spel", inputs[0]);
+        assertEquals("123", inputs[1]);
     }
 
 
     @Test
     @DisplayName("Check borrower username and password validity")
     void RESP_03_test_03(){
+        InitializeBorrowers initborrowers = new InitializeBorrowers();
+        BorrowerRegistry registry = initborrowers.initializeBorrowers();
+        Authenticator authSystem = new Authenticator(registry);
 
-        String validUsername = "user1";
-        String validPassword = "pass1";
+        boolean isValid = authSystem.validateCredentials("Spel", "123");
+        boolean isInValid = authSystem.validateCredentials("invalidUser", "invalidPassword");
 
-        String enteredUsername = null;
-        String enteredPassword = null;
-
-        assertEquals(validUsername, enteredUsername);
-        assertEquals(validPassword, enteredPassword);
-
+        assertTrue(isValid);
+        assertFalse(isInValid);
     }
 
 

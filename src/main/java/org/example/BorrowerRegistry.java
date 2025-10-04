@@ -13,5 +13,13 @@ public class BorrowerRegistry {
 
     public ArrayList<Borrower> getAllBorrowers() { return borrowers; }
 
+    public Borrower findBorrowerUsername(String username) {
+        for (Borrower b : borrowers) {
+            if (b.getUsername().equals(username)) {
+                return b;
+            }
+        }
+        return null;
+    }
 
 }
