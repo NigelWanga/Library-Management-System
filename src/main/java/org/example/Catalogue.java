@@ -4,9 +4,11 @@ import java.util.ArrayList;
 
 public class Catalogue {
     ArrayList<Book> catalogue;
+    ArrayList<Book> books;
 
     public Catalogue(){
-        catalogue = new ArrayList<Book>();
+        catalogue = new ArrayList<>();
+        books = new ArrayList<>();
     }
 
     public void addBook(Book book){
@@ -15,6 +17,16 @@ public class Catalogue {
 
     Book getBook(int index){
         return catalogue.get(index);
+    }
+
+    public Book getBookHeld(String title) {
+        for (Book book : catalogue) {
+            if (book.getTitle().equals(title)) {
+                return book;
+            }
+
+        }
+        return null;
     }
 
     public int getCatalogueSize(){
