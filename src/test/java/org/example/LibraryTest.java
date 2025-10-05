@@ -119,4 +119,27 @@ public class LibraryTest {
     }
 
 
+    @Test
+    @DisplayName("Check if borrower holds have become available & display noti & book info")
+    void RESP_05_test_01(){
+        InitializeLibrary library = new InitializeLibrary();
+        Catalogue catalogue = library.initializeLibrary();
+        InitializeBorrowers initborrowers = new InitializeBorrowers();
+        BorrowerRegistry registry = initborrowers.initializeBorrowers();
+        Authenticator authSystem = new Authenticator(registry);
+
+        boolean isLoggedIn = authSystem.login("Spel", "123");
+        Borrower currentUser = authSystem.getCurrentUser();
+
+        String notification = null;
+
+        assertTrue(isLoggedIn, "Borrower is logged in");
+        assertNotNull(currentUser, "Current user is active" );
+        assertNotNull(notification, "Notify borrower of available held books");
+
+    }
+
+
+
+
 }
