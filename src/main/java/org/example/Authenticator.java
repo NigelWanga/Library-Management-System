@@ -5,6 +5,7 @@ import java.util.Scanner;
 public class Authenticator {
 
     private BorrowerRegistry borrowerRegistry;
+    private Borrower currentUser;
 
     public Authenticator(BorrowerRegistry borrowerRegistry) {
         this.borrowerRegistry = borrowerRegistry;
@@ -31,4 +32,16 @@ public class Authenticator {
         if (borrower == null) { return false; }
         return borrower.getPassword().equals(password);
     }
+
+    public boolean login(String username, String password) {
+        if (validateCredentials(username, password)) {
+            currentUser = borrowerRegistry.findBorrowerUsername(username);
+            return true;
+        } else {
+            currentUser = null;
+            return false;
+        }
+    }
+
+    public Borrower getCurrentUser() { return currentUser; }
 }

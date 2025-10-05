@@ -108,17 +108,13 @@ public class LibraryTest {
         BorrowerRegistry registry = initborrowers.initializeBorrowers();
         Authenticator authSystem = new Authenticator(registry);
 
-        //log in with wrong pass
-        boolean isValid = authSystem.validateCredentials("Spel", "wrongPass");
+        //log in with correct cred
+        boolean isLoggedIn = authSystem.login("Spel", "123");
+        Borrower currentUser = authSystem.getCurrentUser();
 
-        //session made activate only if borrower is valid
-        Borrower currentUser = null;
-        if (isValid) {
-            currentUser = registry.findBorrowerUsername("Spel");
-        }
-
-        assertFalse(isValid, "Failed login - wrong credentials");
-        assertNull(currentUser, "Session cannot be established - invalid login");
+        //establishing session & successful login
+        assertNotNull(currentUser);
+        assertTrue(isLoggedIn);
 
     }
 
