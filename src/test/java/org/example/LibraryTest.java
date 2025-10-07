@@ -122,31 +122,23 @@ public class LibraryTest {
     @Test
     @DisplayName("Check if borrower holds have become available & display noti & book info")
     void RESP_05_test_01(){
-        InitializeLibrary library = new InitializeLibrary();
-        Catalogue catalogue = library.initializeLibrary();
-        InitializeBorrowers initborrowers = new InitializeBorrowers();
-        BorrowerRegistry registry = initborrowers.initializeBorrowers();
-        Authenticator authSystem = new Authenticator(registry);
-
-        boolean isLoggedIn = authSystem.login("Spel", "123");
-        Borrower currentUser = authSystem.getCurrentUser();
+        TestSetup setup = new TestSetup("Spel", "123");
+        Catalogue catalogue = setup.getCatalogue();
+        Borrower currentUser = setup.getCurrentUser();
+        Authenticator authSystem = setup.getAuthSystem();
 
         //here we assume an arbitrary title/book
         currentUser.getHeldBooks().add("War and Peace"); //hold
         Book warAndPeace = catalogue.getBookHeld("War and Peace");
         warAndPeace.setBorrowed(false); //available
 
-
         String notification = authSystem.checkAvailableHolds(currentUser, catalogue);
 
-        assertTrue(isLoggedIn, "Borrower is logged in");
         assertNotNull(currentUser, "Current user is active" );
         assertNotNull(notification, "Notify borrower of available held books");
         System.out.println(notification);
 
     }
-
-
 
 
 }
