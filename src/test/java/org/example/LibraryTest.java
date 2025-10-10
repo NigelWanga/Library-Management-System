@@ -148,7 +148,6 @@ public class LibraryTest {
         Borrower currentUser = setup.getCurrentUser();
         Authenticator authSystem = setup.getAuthSystem();
 
-
         //prompt currentUSer/active user to either (borrow, return or logout)
         String displayOperations = authSystem.displayAvailableOperations(currentUser);
 
@@ -164,8 +163,6 @@ public class LibraryTest {
         assertTrue(displayOperations.contains("Borrow"), "Include borrow operation");
         assertTrue(displayOperations.contains("Return"),  "Include return operation");
         assertTrue(displayOperations.contains("Logout"),   "Include logout operation");
-
-
 
     }
 

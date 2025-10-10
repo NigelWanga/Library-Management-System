@@ -53,5 +53,9 @@ public class Authenticator {
         return null;
     }
 
+    public String displayAvailableOperations(Borrower borrower) {
+        return "Available operations: Borrow | Return | Logout";
+    }
+
     public Borrower getCurrentUser() { return currentUser; }
 }
