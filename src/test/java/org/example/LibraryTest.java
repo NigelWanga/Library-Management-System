@@ -140,5 +140,36 @@ public class LibraryTest {
 
     }
 
+    @Test
+    @DisplayName("Check if operations presented - borrow, return, logout ")
+    void RESP_06_test_01(){
+        TestSetup setup = new TestSetup("Spel", "123");
+        Catalogue catalogue = setup.getCatalogue();
+        Borrower currentUser = setup.getCurrentUser();
+        Authenticator authSystem = setup.getAuthSystem();
+
+
+        //prompt currentUSer/active user to either (borrow, return or logout)
+        String displayOperations = authSystem.displayAvailableOperations(currentUser);
+
+        //borrow
+            //present to the user the books available to borrow (those on hold too?)
+        //return
+            //present to the user the current books they have, and which of them they want to return
+        //logout
+            //make the current user inactive, basically, log them out (perhaps isLoggedIn plays a part in this
+
+        assertNotNull(currentUser, "Current user is active" );
+        assertNotNull(displayOperations, "Display available operations to user");
+        assertTrue(displayOperations.contains("Borrow"), "Include borrow operation");
+        assertTrue(displayOperations.contains("Return"),  "Include return operation");
+        assertTrue(displayOperations.contains("Logout"),   "Include logout operation");
+
+
+
+    }
+
+
+
 
 }
