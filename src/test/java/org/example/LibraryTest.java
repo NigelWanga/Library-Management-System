@@ -173,9 +173,8 @@ public class LibraryTest {
         BorrowerRegistry registry = initborrowers.initializeBorrowers();
         Authenticator authSystem = new Authenticator(registry);
 
-        boolean isInValid = authSystem.validateCredentials("invalidUser", "invalidPassword");
-
-        assertTrue(isInValid, "Expecting authentication error - true instead of false");
+        boolean result = authSystem.handleInvalidLogin("invalidUser", "invalidPassword");
+        assertFalse(result, "Expect false for invalid credentials");
 
     }
 
@@ -193,7 +192,6 @@ public class LibraryTest {
         assertEquals("Enter password: ", prompts[1]);
 
     }
-
 
 
 
