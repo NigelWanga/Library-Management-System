@@ -141,7 +141,7 @@ public class LibraryTest {
     }
 
     @Test
-    @DisplayName("Check if operations presented - borrow, return, logout ")
+    @DisplayName("Check if operations presented - borrow, return, logout")
     void RESP_06_test_01(){
         TestSetup setup = new TestSetup("Spel", "123");
         Catalogue catalogue = setup.getCatalogue();
@@ -163,6 +163,34 @@ public class LibraryTest {
         assertTrue(displayOperations.contains("Borrow"), "Include borrow operation");
         assertTrue(displayOperations.contains("Return"),  "Include return operation");
         assertTrue(displayOperations.contains("Logout"),   "Include logout operation");
+
+    }
+
+    @Test
+    @DisplayName("Check for invalid credentials - authentication error")
+    void RESP_07_test_01(){
+        InitializeBorrowers initborrowers = new InitializeBorrowers();
+        BorrowerRegistry registry = initborrowers.initializeBorrowers();
+        Authenticator authSystem = new Authenticator(registry);
+
+        boolean isInValid = authSystem.validateCredentials("invalidUser", "invalidPassword");
+
+        assertTrue(isInValid, "Expecting authentication error - true instead of false");
+
+    }
+
+    @Test
+    @DisplayName("Check for wrong authentication prompt text")
+    void RESP_07_test_02(){
+        InitializeBorrowers initborrowers = new InitializeBorrowers();
+        BorrowerRegistry registry = initborrowers.initializeBorrowers();
+        Authenticator authSystem = new Authenticator(registry);
+
+        String[] prompts = authSystem.promptCredentials();
+
+        //expected prompts
+        assertEquals("Enter username: ", prompts[0]);
+        assertEquals("Enter password: ", prompts[1]);
 
     }
 
