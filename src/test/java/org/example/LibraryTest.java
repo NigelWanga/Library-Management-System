@@ -193,6 +193,23 @@ public class LibraryTest {
 
     }
 
+    @Test
+    @DisplayName("Display borrower current book count")
+    void RESP_08_test_01(){
+        TestSetup setup = new TestSetup("Nord", "456");
+        Borrower currentUser = setup.getCurrentUser();
+
+        //attribute 1 borrowed book to Nord
+        currentUser.getBorrowedBooks().add("War and Peace");
+
+        int count = currentUser.getBorrowedBooksCount();
+
+        //fail, since Nord has 1 book
+        assertEquals(2, count, "Expect count of borrowed Books - error");
+
+
+    }
+
 
 
 }
