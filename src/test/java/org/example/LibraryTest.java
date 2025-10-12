@@ -2,6 +2,9 @@ package org.example;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class LibraryTest {
@@ -207,6 +210,29 @@ public class LibraryTest {
         //fail, since Nord has 1 book
         assertEquals(1, count, "Borrower should've borrowed 1 book");
 
+    }
+
+    @Test
+    @DisplayName("Check for display of books in collection")
+    void RESP_09_test_01(){
+        TestSetup setup = new TestSetup("Nord", "456");
+        Catalogue catalogue = setup.getCatalogue();
+
+        //display all books
+        ArrayList<Book> books = catalogue.getAllBooks();
+
+        assertNotNull(books, "Books list should not be null");
+
+        for (Book book : books) {
+            assertNotNull(book.getTitle(), "Book title should not be null");
+            assertNotNull(book.getAuthor(), "Book author should not be null");
+            assertNotNull(book.getStatus(), "Book should have status");
+
+            //if checked out, display due date
+            if (book.getStatus("Checked out")) {
+                assertNotNull(book.getDueDate(), "Checked out books have due date");
+            }
+        }
     }
 
 
