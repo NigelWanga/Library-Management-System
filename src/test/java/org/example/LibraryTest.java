@@ -205,8 +205,7 @@ public class LibraryTest {
         int count = currentUser.getBorrowedBooksCount();
 
         //fail, since Nord has 1 book
-        assertEquals(2, count, "Expect count of borrowed Books - error");
-
+        assertEquals(1, count, "Borrower should've borrowed 1 book");
 
     }
 
