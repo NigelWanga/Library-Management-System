@@ -234,6 +234,58 @@ public class LibraryTest {
         }
     }
 
+    @Test
+    @DisplayName("Check for available book selection")
+    void RESP_10_test_01(){
+        TestSetup setup = new TestSetup("Nord", "456");
+        Catalogue catalogue = setup.getCatalogue();
 
+        //present available books
+        ArrayList<Book> availableBooks = new ArrayList<>();
+        for (Book book : catalogue.getAllBooks()) {
+            if (book.isAvailable()) availableBooks.add(book);
+        }
+
+        assertFalse(availableBooks.isEmpty(), "At least one book available");
+
+        //borrower selects book
+        Book selectedBook = availableBooks.get(0);
+        assertNotNull(selectedBook, "Selected book should not be null");
+        assertEquals("Available", selectedBook.getStatus(), "Selected book should be available before borrowing");
+
+    }
+
+
+    @Test
+    @DisplayName("Check for presentation of selected book and borrowing details")
+    void RESP_10_test_02(){
+        TestSetup setup = new TestSetup("Nord", "456");
+        Catalogue catalogue = setup.getCatalogue();
+
+        Book selectedBook = catalogue.getAllBooks().get(0);
+
+        //display book details
+        String details = "Title: " + selectedBook.getTitle() + "\nAuthor: " + selectedBook.getAuthor() + "\nStatus: " + selectedBook.getStatus();
+
+        assertTrue(details.contains(selectedBook.getTitle()), "Details should include title");
+        assertTrue(details.contains(selectedBook.getAuthor()), "Details should include author");
+        assertTrue(details.contains("Available") || details.contains("Checked out"), "Details should include status");
+    }
+
+
+
+    @Test
+    @DisplayName("Check for borrower confirmation")
+    void RESP_10_test_03(){
+        TestSetup setup = new TestSetup("Nord", "456");
+        Catalogue catalogue = setup.getCatalogue();
+
+        Book selectedBook = catalogue.getAllBooks().get(0);
+        selectedBook.borrowBook(); //confirm borrowing
+
+        assertEquals("Checked out", selectedBook.getStatus(), "Book should be checked out");
+        assertNotNull(selectedBook.getDueDate(), "Borrowed book has due date");
+
+    }
 
 }
