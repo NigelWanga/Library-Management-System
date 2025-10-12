@@ -1,14 +1,20 @@
 package org.example;
 
+import java.time.LocalDate;
+
 public class Book {
     String title;
     String author;
     boolean isBorrowed;
+    boolean isOnHold;
+    LocalDate dueDate;
 
     Book(String title, String author){
         this.title = title;
         this.author = author;
         isBorrowed = false;
+        isOnHold = false;
+        dueDate = null;
     }
     public String getTitle(){
         return title;
@@ -16,9 +22,29 @@ public class Book {
     public String getAuthor(){ return author; }
 
     public boolean isAvailable() { return !isBorrowed; }
-    public void borrowBook() { isBorrowed = true; }
-    public void returnBook() { isBorrowed = false;}
-    public void setBorrowed(boolean borrowed) {
-        this.isBorrowed = borrowed;
+
+    //setting the max borrow period as 14 days
+    public void borrowBook() {
+        isBorrowed = true;
+        dueDate = LocalDate.now().plusDays(14);
     }
+
+    public void returnBook() {
+        isBorrowed = false;
+        dueDate = null;
+        isOnHold = false; //hold cleared when returned
+    }
+
+    public void setBorrowed(boolean borrowed) { this.isBorrowed = borrowed; }
+    public boolean isOnHold() { return isOnHold; }
+    public boolean isBorrowed() { return isBorrowed; }
+    public void setOnHold(boolean hold) { isOnHold = hold; }
+    public LocalDate getDueDate() { return dueDate; }
+
+    public String getStatus() {
+        if (isBorrowed) return "Checked out";
+        if (isOnHold) return "On Hold";
+        return "Available";
+    }
+
 }

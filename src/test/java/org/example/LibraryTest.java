@@ -220,7 +220,6 @@ public class LibraryTest {
 
         //display all books
         ArrayList<Book> books = catalogue.getAllBooks();
-
         assertNotNull(books, "Books list should not be null");
 
         for (Book book : books) {
@@ -229,7 +228,7 @@ public class LibraryTest {
             assertNotNull(book.getStatus(), "Book should have status");
 
             //if checked out, display due date
-            if (book.getStatus("Checked out")) {
+            if (book.getStatus().equals("Checked out")) {
                 assertNotNull(book.getDueDate(), "Checked out books have due date");
             }
         }

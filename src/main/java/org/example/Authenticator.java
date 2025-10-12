@@ -70,5 +70,12 @@ public class Authenticator {
         return "Available operations: Borrow | Return | Logout";
     }
 
+    public String displayBookStatus(Book book, Borrower borrower) {
+        if (book.isOnHold() && !borrower.getHeldBooks().contains(book.getTitle())) {
+            return "On Hold"; //another borrower has it
+        }
+        return book.getStatus();
+    }
+
     public Borrower getCurrentUser() { return currentUser; }
 }

@@ -19,6 +19,10 @@ public class Catalogue {
         return catalogue.get(index);
     }
 
+    ArrayList<Book> getAllBooks(){
+        return books;
+    }
+
     public Book getBookHeld(String title) {
         for (Book book : catalogue) {
             if (book.getTitle().equals(title)) {
