@@ -4,11 +4,9 @@ import java.util.ArrayList;
 
 public class Catalogue {
     ArrayList<Book> catalogue;
-    ArrayList<Book> books;
 
     public Catalogue(){
         catalogue = new ArrayList<>();
-        books = new ArrayList<>();
     }
 
     public void addBook(Book book){
@@ -20,7 +18,7 @@ public class Catalogue {
     }
 
     ArrayList<Book> getAllBooks(){
-        return books;
+        return catalogue;
     }
 
     public Book getBookHeld(String title) {

@@ -78,4 +78,35 @@ public class Authenticator {
     }
 
     public Borrower getCurrentUser() { return currentUser; }
+
+
+    public Book selectAvailableBook(Catalogue catalogue) {
+        for (Book book : catalogue.getAllBooks()) {
+            if (book.isAvailable()) {
+                return book; //this is when borrower selects first available book
+            }
+        }
+        return null;
+    }
+
+    public String presentBorrowingDetails(Book selectedBook) {
+        if (selectedBook == null) return "No book selected";
+
+        return "Selected Book Details:\n" +
+                "Title: " + selectedBook.getTitle() + "\n" +
+                "Author: " + selectedBook.getAuthor() + "\n" +
+                "Status: " + selectedBook.getStatus();
+    }
+
+    public String confirmBorrowing(Book selectedBook, Borrower borrower) {
+        if (selectedBook == null) return "No book selected for confirmation";
+        if (!selectedBook.isAvailable()) return "Book is not available";
+
+        selectedBook.borrowBook(); //the selected book is borrowed
+        borrower.addBorrowedBook(selectedBook.getTitle());
+
+        return "Borrow confirmed: " + selectedBook.getTitle() + "\nDue Date: " + selectedBook.getDueDate();
+    }
+
+
 }

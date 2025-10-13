@@ -27,4 +27,8 @@ public class Borrower {
 
     public ArrayList<String> getHeldBooks() { return heldBooks;}
 
+    public void addBorrowedBook(String title) {
+        borrowedBooks.add(title);
+    }
+
 }
