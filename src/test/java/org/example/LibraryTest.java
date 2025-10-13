@@ -284,4 +284,18 @@ public class LibraryTest {
 
     }
 
+
+
+    @Test
+    @DisplayName("Check system verification on book availability")
+    void RESP_11_test_01(){
+        TestSetup setup = new TestSetup("Nord", "456");
+        Catalogue catalogue = setup.getCatalogue();
+
+        ArrayList<Book> books = catalogue.getAllBooks();
+
+        assertFalse(books.get(0).getStatus().equals("Available"), "Books incorrectly marked as available");
+        assertNotNull(books, "Books list should not be null");
+    }
+
 }
