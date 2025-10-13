@@ -403,4 +403,42 @@ public class LibraryTest {
         assertTrue(currentUser.getBorrowedBooks().contains(selectedBook.getTitle()), "Borrower should now have the book recorded");
         assertEquals("Checked out", selectedBook.getStatus(), "Book status must be 'Checked out'");
     }
+
+
+
+    @Test
+    @DisplayName("Check borrowing confirmation and borrower acknowledgment")
+    void RESP_16_test_01(){
+        TestSetup setup = new TestSetup("Nord", "456");
+        Borrower currentUser = setup.getCurrentUser();
+        Catalogue catalogue = setup.getCatalogue();
+        Authenticator authSystem = setup.getAuthSystem();
+
+        //select book
+        Book selectedBook = authSystem.selectAvailableBook(catalogue);
+
+        //confirm borrowing
+        String confirmation = authSystem.confirmBorrowing(selectedBook, currentUser);
+
+        //check wrong confirmation - fails
+        assertTrue(confirmation.contains("Borrowed successfully"), "Borrowing should be confirmed");
+
+        //borrower does not acknowledge
+        boolean acknowledge = false;
+        assertTrue(acknowledge, "Borrower acknowledges completion");
+
+    }
+
+    @Test
+    @DisplayName("Check system returns to available functionality after borrowing")
+    void RESP_16_test_02(){
+        TestSetup setup = new TestSetup("Nord", "456");
+        Authenticator authSystem = setup.getAuthSystem();
+
+        boolean returnToFunctionality = false;
+        assertTrue(returnToFunctionality, "System should return to available functionality");
+
+    }
+
+
 }
