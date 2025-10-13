@@ -384,4 +384,20 @@ public class LibraryTest {
 
     }
 
+
+    @Test
+    @DisplayName("Check borrower account update & book availability status")
+    void RESP_15_test_01(){
+        TestSetup setup = new TestSetup("Nord", "456");
+        Borrower currentUser = setup.getCurrentUser();
+        Catalogue catalogue = setup.getCatalogue();
+        Authenticator authSystem = setup.getAuthSystem();
+
+        //select book
+        Book selectedBook = authSystem.selectAvailableBook(catalogue);
+
+        //skip with updating borrower & book
+        assertTrue(currentUser.getBorrowedBooks().contains(selectedBook.getTitle()), "Borrower shouldn't have the book recorded yet");
+        assertEquals("Available", selectedBook.getStatus(), "Book status must be 'Available'");
+    }
 }
