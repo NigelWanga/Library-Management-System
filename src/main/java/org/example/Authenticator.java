@@ -128,6 +128,30 @@ public class Authenticator {
 
     public boolean returnToFunctionalitySection() { return true; }
 
+    public String handleUnavailableBook(Book book, Borrower borrower) {
+        if (book == null) return "Book not found.";
+
+        if (borrower.getBorrowedBooks().contains(book.getTitle()))
+            return "You already have this book checked out";
+
+        if (borrower.hasHeldBook(book.getTitle()))
+            return "You already have a hold on this book";
+
+        if (!book.isAvailable()) {
+            book.placeHold(borrower.getUsername());
+            borrower.addHeldBook(book.getTitle());
+            return "Hold placed successfully.";
+        }
+
+        if (borrower.getBorrowedBooksCount() >= 3) {
+            book.placeHold(borrower.getUsername());
+            borrower.addHeldBook(book.getTitle());
+            return "You reached your limit, but a hold was placed.";
+        }
+
+        return "Book is available — proceed to borrow.";
+    }
+
 
 
 }

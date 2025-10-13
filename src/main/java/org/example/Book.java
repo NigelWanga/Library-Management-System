@@ -8,6 +8,7 @@ public class Book {
     boolean isBorrowed;
     boolean isOnHold;
     LocalDate dueDate;
+    String onHoldBy;
 
     Book(String title, String author){
         this.title = title;
@@ -15,6 +16,7 @@ public class Book {
         isBorrowed = false;
         isOnHold = false;
         dueDate = null;
+        onHoldBy = null;
     }
     public String getTitle(){
         return title;
@@ -36,10 +38,12 @@ public class Book {
     }
 
     public void setBorrowed(boolean borrowed) { this.isBorrowed = borrowed; }
-    public boolean isOnHold() { return isOnHold; }
+    public boolean isOnHold() { return onHoldBy != null; }
     public boolean isBorrowed() { return isBorrowed; }
     public void setOnHold(boolean hold) { isOnHold = hold; }
     public LocalDate getDueDate() { return dueDate; }
+    public void placeHold(String borrowerUser) { onHoldBy = borrowerUser; }
+    public String getHoldBy() { return onHoldBy; }
 
     public String getStatus() {
         if (isBorrowed) return "Checked out";

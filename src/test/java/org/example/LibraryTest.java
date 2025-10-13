@@ -449,23 +449,14 @@ public class LibraryTest {
         TestSetup setup = new TestSetup("Nord", "456");
         Borrower currentUser = setup.getCurrentUser();
         Catalogue catalogue = setup.getCatalogue();
+        Authenticator authSystem = setup.getAuthSystem();
 
         //borrower borrows book
         Book borrowedBook = catalogue.getBookHeld("Treasure Island");
         borrowedBook.borrowBook();
-        currentUser.addBorrowedBook("Treasure Island");
+        String response = authSystem.handleUnavailableBook(borrowedBook, currentUser);
 
-        //diff borrower attempts to borrow same book
-        Borrower diffBorrower = new Borrower ("Aeil", "789");
-        boolean placeHold = false;
-
-        //checking for hold eligibility
-        if (!borrowedBook.isAvailable()) {
-            placeHold = true;
-        }
-
-        assertFalse(placeHold, "System handles unavailable book and offer hold placement");
-
+        assertTrue(response.contains("Hold"), "System should handle hold placement properly for unavailable book");
 
     }
 
