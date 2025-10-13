@@ -352,11 +352,12 @@ public class LibraryTest {
         currentUser.addBorrowedBook(selectedBook.getTitle());
 
 
-        //fail since we assume the wrong due date
-        LocalDate wrongDueDate = LocalDate.now().plusDays(7);
+        //due date should be 14 days from current date
+        LocalDate expectedDueDate = LocalDate.now().plusDays(14);
+        LocalDate actualDueDate = selectedBook.getDueDate();
 
         //fails, since due date should be 14 days
-        assertEquals(wrongDueDate, selectedBook.getDueDate(), "Due date should be 14 days");
+        assertEquals(expectedDueDate, actualDueDate, "Due date should be 14 days");
 
     }
 
