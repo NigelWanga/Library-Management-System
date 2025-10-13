@@ -102,6 +102,11 @@ public class Authenticator {
         if (selectedBook == null) return "No book selected for confirmation";
         if (!selectedBook.isAvailable()) return "Book is not available";
 
+        //max borrow limit
+        if (borrower.getBorrowedBooks().size() >= 3) {
+            return "Maximum borrowing limit reached";
+        }
+
         selectedBook.borrowBook(); //the selected book is borrowed
         borrower.addBorrowedBook(selectedBook.getTitle());
 
