@@ -158,5 +158,23 @@ public class Authenticator {
     }
 
 
+    public String displayBorrowedBooks(Borrower borrower, Catalogue catalogue) {
+        if (borrower.getBorrowedBooks().isEmpty()) {
+            return "No books are currently borrowed";
+        }
+
+        String display = "";
+        for (String title : borrower.getBorrowedBooks()) {
+            Book book = catalogue.getBookHeld(title);
+            if (book != null) {
+                display += book.getTitle() + " - Due: " + book.getDueDate().toString() + "\n";
+            }
+        }
+        return display.trim();
+    }
+
+
+
+
 
 }

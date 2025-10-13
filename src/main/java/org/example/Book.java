@@ -50,5 +50,4 @@ public class Book {
         if (isOnHold) return "On Hold";
         return "Available";
     }
-
 }

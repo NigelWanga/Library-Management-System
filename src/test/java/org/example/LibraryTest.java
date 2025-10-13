@@ -505,7 +505,7 @@ public class LibraryTest {
         authSystem.updateBorrowerAndBook(currentUser, borrowedBook2);
 
         //display borrowed books
-        String borrowedBooksDisplay = authSystem.displayBorrowedBooks(currentUser);
+        String borrowedBooksDisplay = authSystem.displayBorrowedBooks(currentUser, catalogue);
 
         //check that each borrowed book title and due date is included
         assertTrue(borrowedBooksDisplay.contains(borrowedBook2.getTitle()), "Display should include first borrowed book title");
