@@ -416,15 +416,16 @@ public class LibraryTest {
 
         //select book
         Book selectedBook = authSystem.selectAvailableBook(catalogue);
+        assertNotNull(selectedBook, "Available book should be selected");
 
         //confirm borrowing
         String confirmation = authSystem.confirmBorrowing(selectedBook, currentUser);
 
         //check wrong confirmation - fails
-        assertTrue(confirmation.contains("Borrowed successfully"), "Borrowing should be confirmed");
+        assertTrue(confirmation.contains("Borrow confirmed"), "Borrowing should be confirmed");
 
         //borrower does not acknowledge
-        boolean acknowledge = false;
+        boolean acknowledge = authSystem.acknowledgeBorrowing(selectedBook, currentUser);
         assertTrue(acknowledge, "Borrower acknowledges completion");
 
     }
@@ -435,10 +436,13 @@ public class LibraryTest {
         TestSetup setup = new TestSetup("Nord", "456");
         Authenticator authSystem = setup.getAuthSystem();
 
-        boolean returnToFunctionality = false;
+        boolean returnToFunctionality = authSystem.returnToFunctionalitySection();
         assertTrue(returnToFunctionality, "System should return to available functionality");
 
     }
+
+
+
 
 
 }

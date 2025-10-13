@@ -124,6 +124,10 @@ public class Authenticator {
         }
     }
 
+    public boolean acknowledgeBorrowing(Book book, Borrower borrower) { return true; }
+
+    public boolean returnToFunctionalitySection() { return true; }
+
 
 
 }
