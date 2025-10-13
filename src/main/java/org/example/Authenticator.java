@@ -108,5 +108,10 @@ public class Authenticator {
         return "Borrow confirmed: " + selectedBook.getTitle() + "\nDue Date: " + selectedBook.getDueDate();
     }
 
+    public boolean verifyBookAvailability(Book book, Borrower borrower) {
+        return book.isAvailable() && !(book.isOnHold() && !borrower.getHeldBooks().contains(book.getTitle()));
+    }
+
+
 
 }

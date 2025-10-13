@@ -291,11 +291,28 @@ public class LibraryTest {
     void RESP_11_test_01(){
         TestSetup setup = new TestSetup("Nord", "456");
         Catalogue catalogue = setup.getCatalogue();
+        Borrower currentUser = setup.getCurrentUser();
+        Authenticator authSystem = setup.getAuthSystem();
 
-        ArrayList<Book> books = catalogue.getAllBooks();
+        //select book
+        Book selectedBook = authSystem.selectAvailableBook(catalogue);
+        assertNotNull(selectedBook, "Available book is selected");
 
-        assertFalse(books.get(0).getStatus().equals("Available"), "Books incorrectly marked as available");
-        assertNotNull(books, "Books list should not be null");
+        //verify availability of book
+        boolean isAvailable = authSystem.verifyBookAvailability(selectedBook, currentUser);
+        assertTrue(isAvailable, "Book available for borrowing");
+
+        //borrow book
+        String confirmation = authSystem.confirmBorrowing(selectedBook, currentUser);
+        assertTrue(confirmation.contains("Borrow confirmed"), "Borrowing should be confirmed");
+
+        //verify book is checked out
+        assertEquals("Checked out", selectedBook.getStatus(), "Book status must be 'Checked out'");
+
+        //so if we attempt to borrow same book, it fails
+        boolean secondCheck = authSystem.verifyBookAvailability(selectedBook, currentUser);
+        assertFalse(secondCheck, "Book shouldn't be available after borrowing");
+
     }
 
 }
