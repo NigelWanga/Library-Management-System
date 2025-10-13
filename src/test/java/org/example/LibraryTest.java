@@ -362,4 +362,19 @@ public class LibraryTest {
     }
 
 
+    @Test
+    @DisplayName("Check recording of borrowing transaction and borrower information")
+    void RESP_14_test_01(){
+        TestSetup setup = new TestSetup("Nord", "456");
+        Borrower currentUser = setup.getCurrentUser();
+        Catalogue catalogue = setup.getCatalogue();
+
+        //borrow book but dont link properly to system
+        Book bookToBorrow = catalogue.getAllBooks().get(0);
+
+        //borrow should have this book but they dont
+        assertTrue(currentUser.getBorrowedBooks().contains(bookToBorrow.getTitle()), "Borrowing transaction should record book & borrower");
+
+    }
+
 }
