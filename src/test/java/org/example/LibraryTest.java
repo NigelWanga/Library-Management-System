@@ -315,4 +315,26 @@ public class LibraryTest {
 
     }
 
+
+
+    @Test
+    @DisplayName("Check for verification eligibility to borrow book")
+    void RESP_12_test_01(){
+        TestSetup setup = new TestSetup("Nord", "456");
+        Borrower currentUser = setup.getCurrentUser();
+
+
+        //borrower has borrowed 3 books
+        currentUser.addBorrowedBook("Treasure Island");
+        currentUser.addBorrowedBook("Great Expectations");
+        currentUser.addBorrowedBook("The Return of the King");
+
+        int borrowedBooks = currentUser.getBorrowedBooksCount();
+
+        boolean isEligible = borrowedBooks < 3;
+
+        assertTrue(isEligible, "Borrower shouldn't be eligible to borrow more than 3 books");
+
+    }
+
 }
