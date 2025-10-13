@@ -490,4 +490,34 @@ public class LibraryTest {
 
 
 
+    @Test
+    @DisplayName("Check that system displays borrower's current borrowed books w/ due dates")
+    void RESP_19_test_01(){
+        TestSetup setup = new TestSetup("Aeil", "789");
+        Borrower currentUser = setup.getCurrentUser();
+        Catalogue catalogue = setup.getCatalogue();
+        Authenticator authSystem = setup.getAuthSystem();
+
+        Book borrowedBook1 = authSystem.selectAvailableBook(catalogue);
+        authSystem.updateBorrowerAndBook(currentUser, borrowedBook1);
+
+        Book borrowedBook2 = authSystem.selectAvailableBook(catalogue);
+        authSystem.updateBorrowerAndBook(currentUser, borrowedBook2);
+
+        //display borrowed books
+        String borrowedBooksDisplay = authSystem.displayBorrowedBooks(currentUser);
+
+        //check that each borrowed book title and due date is included
+        assertTrue(borrowedBooksDisplay.contains(borrowedBook2.getTitle()), "Display should include first borrowed book title");
+        assertTrue(borrowedBooksDisplay.contains(borrowedBook1.getDueDate().toString()), "Display should include first borrowed book due date");
+
+        assertTrue(borrowedBooksDisplay.contains(borrowedBook1.getTitle()), "Display should include second borrowed book title");
+        assertTrue(borrowedBooksDisplay.contains(borrowedBook2.getDueDate().toString()), "Display should include second borrowed book due date");
+
+
+
+    }
+
+
+
 }
