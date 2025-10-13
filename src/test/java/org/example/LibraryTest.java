@@ -368,12 +368,19 @@ public class LibraryTest {
         TestSetup setup = new TestSetup("Nord", "456");
         Borrower currentUser = setup.getCurrentUser();
         Catalogue catalogue = setup.getCatalogue();
+        Authenticator authSystem = setup.getAuthSystem();
 
-        //borrow book but dont link properly to system
-        Book bookToBorrow = catalogue.getAllBooks().get(0);
+        //select first available book
+        Book bookToBorrow = authSystem.selectAvailableBook(catalogue);
 
-        //borrow should have this book but they dont
-        assertTrue(currentUser.getBorrowedBooks().contains(bookToBorrow.getTitle()), "Borrowing transaction should record book & borrower");
+        //confirm borrowing transaction
+        String confirmation = authSystem.confirmBorrowing(bookToBorrow, currentUser);
+
+        assertNotNull(bookToBorrow, "Book to borrow should not be null");
+        assertTrue(currentUser.getBorrowedBooks().contains(bookToBorrow.getTitle()),"Borrower should have the book recorded");
+        assertEquals("Checked out", bookToBorrow.getStatus(),"Book status should be 'Checked out'");
+        assertNotNull(bookToBorrow.getDueDate(),"Borrowed book should have a due date");
+        assertTrue(confirmation.contains("Borrow confirmed"),"Confirmation message should show borrow success");
 
     }
 
