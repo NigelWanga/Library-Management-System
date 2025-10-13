@@ -3,6 +3,7 @@ package org.example;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -335,5 +336,29 @@ public class LibraryTest {
         assertFalse(isEligible, "Borrower shouldn't be eligible to borrow more than 3 books");
 
     }
+
+
+
+    @Test
+    @DisplayName("Check due date calculation")
+    void RESP_13_test_01(){
+        TestSetup setup = new TestSetup("Nord", "456");
+        Borrower currentUser = setup.getCurrentUser();
+        Catalogue catalogue = setup.getCatalogue();
+
+        //select first book and borrow
+        Book selectedBook = catalogue.getAllBooks().get(0);
+        selectedBook.borrowBook();
+        currentUser.addBorrowedBook(selectedBook.getTitle());
+
+
+        //fail since we assume the wrong due date
+        LocalDate wrongDueDate = LocalDate.now().plusDays(7);
+
+        //fails, since due date should be 14 days
+        assertEquals(wrongDueDate, selectedBook.getDueDate(), "Due date should be 14 days");
+
+    }
+
 
 }
