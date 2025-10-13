@@ -396,8 +396,11 @@ public class LibraryTest {
         //select book
         Book selectedBook = authSystem.selectAvailableBook(catalogue);
 
+        //update borrower and book
+        authSystem.updateBorrowerAndBook(currentUser, selectedBook);
+
         //skip with updating borrower & book
-        assertTrue(currentUser.getBorrowedBooks().contains(selectedBook.getTitle()), "Borrower shouldn't have the book recorded yet");
-        assertEquals("Available", selectedBook.getStatus(), "Book status must be 'Available'");
+        assertTrue(currentUser.getBorrowedBooks().contains(selectedBook.getTitle()), "Borrower should now have the book recorded");
+        assertEquals("Checked out", selectedBook.getStatus(), "Book status must be 'Checked out'");
     }
 }

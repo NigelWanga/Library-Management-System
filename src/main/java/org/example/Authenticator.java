@@ -116,6 +116,14 @@ public class Authenticator {
         return borrower.getBorrowedBooksCount() < 3; //borrower can borrow if has < 3 books
     }
 
+    public void updateBorrowerAndBook(Borrower borrower, Book book) {
+        if (book != null && book.isAvailable()) {
+            book.borrowBook();
+
+            borrower.addBorrowedBook(book.getTitle());
+        }
+    }
+
 
 
 }
