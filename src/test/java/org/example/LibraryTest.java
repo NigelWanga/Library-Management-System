@@ -460,5 +460,34 @@ public class LibraryTest {
 
     }
 
+    @Test
+    @DisplayName("Check borrower - has borrowed max of 3 books")
+    void RESP_18_test_01(){
+        TestSetup setup = new TestSetup("Nord", "456");
+        Borrower currentUser = setup.getCurrentUser();
+        Catalogue catalogue = setup.getCatalogue();
+        Authenticator authSystem = setup.getAuthSystem();
+
+        // Borrow 3 books first
+        Book book1 = authSystem.selectAvailableBook(catalogue);
+        authSystem.updateBorrowerAndBook(currentUser, book1);
+
+        Book book2 = authSystem.selectAvailableBook(catalogue);
+        authSystem.updateBorrowerAndBook(currentUser, book2);
+
+        Book book3 = authSystem.selectAvailableBook(catalogue);
+        authSystem.updateBorrowerAndBook(currentUser, book3);
+
+        // Attempt to borrow 4th book
+        Book book4 = authSystem.selectAvailableBook(catalogue);
+        String response = authSystem.confirmBorrowing(book4, currentUser);
+
+        // Assertions
+        assertTrue(response.contains("Maximum borrowing limit reached"), "System should notify max borrowing limit reached");
+        assertEquals(3, currentUser.getBorrowedBooks().size(), "Borrower should still have only 3 books");
+
+    }
+
+
 
 }
