@@ -112,6 +112,10 @@ public class Authenticator {
         return book.isAvailable() && !(book.isOnHold() && !borrower.getHeldBooks().contains(book.getTitle()));
     }
 
+    public boolean verifyBorrowerEligibility(Borrower borrower) {
+        return borrower.getBorrowedBooksCount() < 3; //borrower can borrow if has < 3 books
+    }
+
 
 
 }

@@ -322,6 +322,7 @@ public class LibraryTest {
     void RESP_12_test_01(){
         TestSetup setup = new TestSetup("Nord", "456");
         Borrower currentUser = setup.getCurrentUser();
+        Authenticator authSystem = setup.getAuthSystem();
 
 
         //borrower has borrowed 3 books
@@ -329,11 +330,9 @@ public class LibraryTest {
         currentUser.addBorrowedBook("Great Expectations");
         currentUser.addBorrowedBook("The Return of the King");
 
-        int borrowedBooks = currentUser.getBorrowedBooksCount();
+        boolean isEligible = authSystem.verifyBorrowerEligibility(currentUser);
 
-        boolean isEligible = borrowedBooks < 3;
-
-        assertTrue(isEligible, "Borrower shouldn't be eligible to borrow more than 3 books");
+        assertFalse(isEligible, "Borrower shouldn't be eligible to borrow more than 3 books");
 
     }
 
