@@ -443,6 +443,31 @@ public class LibraryTest {
 
 
 
+    @Test
+    @DisplayName("Check system handling of unavailable book and hold placement")
+    void RESP_17_test_01(){
+        TestSetup setup = new TestSetup("Nord", "456");
+        Borrower currentUser = setup.getCurrentUser();
+        Catalogue catalogue = setup.getCatalogue();
+
+        //borrower borrows book
+        Book borrowedBook = catalogue.getBookHeld("Treasure Island");
+        borrowedBook.borrowBook();
+        currentUser.addBorrowedBook("Treasure Island");
+
+        //diff borrower attempts to borrow same book
+        Borrower diffBorrower = new Borrower ("Aeil", "789");
+        boolean placeHold = false;
+
+        //checking for hold eligibility
+        if (!borrowedBook.isAvailable()) {
+            placeHold = true;
+        }
+
+        assertFalse(placeHold, "System handles unavailable book and offer hold placement");
+
+
+    }
 
 
 }
