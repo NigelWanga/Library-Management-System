@@ -185,10 +185,11 @@ public class Authenticator {
 
         //update status & borrower acc
         if (book.getHoldBy() == null || book.getHoldBy().isEmpty()) {
-            book.returnBook();
+            book.returnBook(); //reset borrowed, onHold, dueDate
         } else {
-            book.setStatus("On Hold");
+            book.setBorrowed(false);
             book.setOnHold(true);
+            book.setStatus("On Hold");
         }
 
         borrower.removeBorrowedBook(book.getTitle());
