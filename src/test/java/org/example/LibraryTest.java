@@ -513,10 +513,32 @@ public class LibraryTest {
 
         assertTrue(borrowedBooksDisplay.contains(borrowedBook1.getTitle()), "Display should include second borrowed book title");
         assertTrue(borrowedBooksDisplay.contains(borrowedBook2.getDueDate().toString()), "Display should include second borrowed book due date");
-
-
-
+        
     }
+    
+    
+    
+    @Test
+    @DisplayName("Check for borrower book return process ")
+    void RESP_20_test_01(){
+        TestSetup setup = new TestSetup("Aeil", "789");
+        Borrower currentUser = setup.getCurrentUser();
+        Catalogue catalogue = setup.getCatalogue();
+        Authenticator authSystem = setup.getAuthSystem();
+
+        //borrow book
+        Book borrowBook = authSystem.selectAvailableBook(catalogue);
+        authSystem.updateBorrowerAndBook(currentUser, borrowBook);
+
+        //returning borrowed book
+        String returnBookMsg = authSystem.returnBook(borrowBook, currentUser, catalogue);
+
+        assertEquals("Return confirmed: " + borrowBook.getTitle(), returnBookMsg, "System confirms return");
+        assertTrue(currentUser.getBorrowedBooks().isEmpty(), "Borrower's book list should be empty");
+        assertEquals("Available", borrowBook.getStatus(), "Book status should be available");
+        assertTrue(authSystem.returnToFunctionalitySection(), "System returns to available functionality");
+    }
+
 
 
 
