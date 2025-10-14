@@ -542,4 +542,23 @@ public class LibraryTest {
 
 
 
+
+    @Test
+    @DisplayName("Manage borrower who has no books currently borrowed")
+    void RESP_21_test_01(){
+        TestSetup setup = new TestSetup("Aeil", "789");
+        Borrower currentUser = setup.getCurrentUser();
+        Catalogue catalogue = setup.getCatalogue();
+        Authenticator authSystem = setup.getAuthSystem();
+
+
+        Book book = authSystem.selectAvailableBook(catalogue);
+        String result = authSystem.returnBook(book, currentUser, catalogue);
+
+        assertEquals("Book is currently borrowed", result, "Notify borrower that no books currently borrowed");
+
+    }
+
+
+
 }
