@@ -541,8 +541,6 @@ public class LibraryTest {
 
 
 
-
-
     @Test
     @DisplayName("Manage borrower who has no books currently borrowed")
     void RESP_21_test_01(){
@@ -558,6 +556,43 @@ public class LibraryTest {
         assertEquals("No books are currently borrowed", result, "Notify borrower that no books currently borrowed");
 
     }
+
+    @Test
+    @DisplayName("Manage holds on returned books")
+    void RESP_22_test_01(){
+        TestSetup setup = new TestSetup("Aeil", "789");
+        Borrower currentUser = setup.getCurrentUser();
+        Catalogue catalogue = setup.getCatalogue();
+        Authenticator authSystem = setup.getAuthSystem();
+
+        Borrower nextBorrower = new Borrower("NextBorrower", "000");
+
+        //borrow book
+        Book borrowedBook = authSystem.selectAvailableBook(catalogue);
+        authSystem.updateBorrowerAndBook(currentUser, borrowedBook);
+
+        //place hold
+        borrowedBook.placeHold(nextBorrower.getUsername());
+
+        //book returnal
+        String result = authSystem.returnBook(borrowedBook, currentUser, catalogue);
+
+        assertEquals("Return confirmed: " + borrowedBook.getTitle(), result, "System confirms return");
+
+        //book should be on hold
+        assertEquals("On Hold", borrowedBook.getStatus(), "Book status should be on hold");
+
+        //currentUser shouldn't have book
+        assertFalse(currentUser.getBorrowedBooks().contains(borrowedBook.getTitle()), "Original borrower shouldn't have the book");
+
+        //next borrower recorded as current holder
+        assertEquals(nextBorrower.getUsername(), borrowedBook.getHoldBy(), "Book reserved for next borrower");
+
+
+    }
+
+
+
 
 
 
