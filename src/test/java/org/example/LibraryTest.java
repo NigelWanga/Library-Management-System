@@ -555,7 +555,7 @@ public class LibraryTest {
         Book book = authSystem.selectAvailableBook(catalogue);
         String result = authSystem.returnBook(book, currentUser, catalogue);
 
-        assertEquals("Book is currently borrowed", result, "Notify borrower that no books currently borrowed");
+        assertEquals("No books are currently borrowed", result, "Notify borrower that no books currently borrowed");
 
     }
 
