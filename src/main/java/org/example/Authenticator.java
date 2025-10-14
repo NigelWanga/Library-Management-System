@@ -173,6 +173,35 @@ public class Authenticator {
         return display.trim();
     }
 
+    public String returnBook(Book book, Borrower borrower, Catalogue catalogue) {
+        if (borrower.getBorrowedBooks().isEmpty()) {
+            return "No books are currently borrowed";
+        }
+
+        //check for holds
+        if (book == null) {
+            return "No book selected for return";
+        }
+
+        //update status & borrower acc
+        if (book.getHoldBy() == null || book.getHoldBy().isEmpty()) {
+            book.returnBook();
+        } else {
+            book.setStatus("On Hold");
+            book.setOnHold(true);
+        }
+
+        borrower.removeBorrowedBook(book.getTitle());
+
+        //return confirmation
+        String confirmation = "Return confirmed: " + book.getTitle();
+
+        //acknowledge & return to functionality
+        returnToFunctionalitySection();
+
+        return confirmation;
+    }
+
 
 
 

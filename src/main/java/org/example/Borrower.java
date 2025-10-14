@@ -25,5 +25,6 @@ public class Borrower {
     public void addBorrowedBook(String title) { borrowedBooks.add(title); }
     public boolean hasHeldBook(String title) { return heldBooks.contains(title); }
     public void addHeldBook(String title) { heldBooks.add(title); }
+    public void removeBorrowedBook(String title){ borrowedBooks.remove(title); }
 
 }

@@ -9,6 +9,7 @@ public class Book {
     boolean isOnHold;
     LocalDate dueDate;
     String onHoldBy;
+    String status;
 
     Book(String title, String author){
         this.title = title;
@@ -50,4 +51,6 @@ public class Book {
         if (isOnHold) return "On Hold";
         return "Available";
     }
+
+    public void setStatus(String status) { this.status = status; }
 }
