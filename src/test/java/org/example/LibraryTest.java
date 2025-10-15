@@ -615,7 +615,6 @@ public class LibraryTest {
         //verify system return to user authentication
         assertTrue(authSystem.userAuthenticationPrompt(), "System should prompt for user authentication after logout");
 
-
     }
 
 

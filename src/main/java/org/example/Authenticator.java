@@ -6,6 +6,7 @@ public class Authenticator {
 
     private BorrowerRegistry borrowerRegistry;
     private Borrower currentUser;
+    private boolean authenticationPrompt = false;
 
     public Authenticator(BorrowerRegistry borrowerRegistry) {
         this.borrowerRegistry = borrowerRegistry;
@@ -201,6 +202,25 @@ public class Authenticator {
         returnToFunctionalitySection();
 
         return confirmation;
+    }
+
+    public String logout() {
+        //logout msg
+        System.out.println("Logout successful. Returning to authentication");
+
+        //clear session
+        currentUser = null;
+
+        //authentication prompt
+        authenticationPrompt = true;
+        promptCredentials();
+
+        //confirmation
+        return "Logout successful. Returning to authentication";
+    }
+
+    public boolean userAuthenticationPrompt() {
+        return authenticationPrompt;
     }
 
 
