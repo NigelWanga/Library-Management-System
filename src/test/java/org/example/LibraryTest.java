@@ -593,6 +593,33 @@ public class LibraryTest {
 
 
 
+    @Test
+    @DisplayName("Check successful logout of user, and return to user authentication")
+    void RESP_23_test_01(){
+        TestSetup setup = new TestSetup("Aeil", "789");
+        Borrower currentUser = setup.getCurrentUser();
+        Authenticator authSystem = setup.getAuthSystem();
+
+        //currentUser still logged in
+        assertNotNull(currentUser, "Current user currently logged in before logout");
+
+        //logout user
+        String logoutResult = authSystem.logout();
+
+        //verify logout
+        assertEquals("Logout successful. Returning to authentication", logoutResult, "System confirms logout");
+
+        //verify that user/session is cleared
+        assertNull(authSystem.getCurrentUser(), "Current user is cleared from session");
+
+        //verify system return to user authentication
+        assertTrue(authSystem.userAuthenticationPrompt(), "System should prompt for user authentication after logout");
+
+
+    }
+
+
+
 
 
 
