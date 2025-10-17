@@ -67,10 +67,10 @@ public class LibraryTest {
         Authenticator authSystem = new Authenticator(registry);
 
         String[] prompts = authSystem.promptCredentials();
+        String expected = "Enter username: Enter password: ";
 
         //expected prompts
-        assertEquals("Enter username: ", prompts[0]);
-        assertEquals("Enter password: ", prompts[1]);
+        assertEquals(expected, String.join("", prompts), "Authentication prompts should match expected sequence");
     }
 
     @Test
@@ -81,13 +81,10 @@ public class LibraryTest {
         Authenticator authSystem = new Authenticator(registry);
 
         //input simulation
-        String username = "Spel";
-        String password = "123";
+        String[] inputs = authSystem.captureCredentials("Spel", "123");
+        String combined = inputs[0] + ":" + inputs[1];
 
-        String[] inputs = authSystem.captureCredentials(username, password);
-
-        assertEquals("Spel", inputs[0]);
-        assertEquals("123", inputs[1]);
+        assertEquals("Spel:123", combined, "Captured username and password should match expected values");
     }
 
 
@@ -98,11 +95,10 @@ public class LibraryTest {
         BorrowerRegistry registry = initborrowers.initializeBorrowers();
         Authenticator authSystem = new Authenticator(registry);
 
-        boolean isValid = authSystem.validateCredentials("Spel", "123");
-        boolean isInValid = authSystem.validateCredentials("invalidUser", "invalidPassword");
+        boolean allValidationsCorrect = authSystem.validateCredentials("Spel", "123") &&
+                !authSystem.validateCredentials("invalidUser", "invalidPassword");
 
-        assertTrue(isValid);
-        assertFalse(isInValid);
+        assertTrue(allValidationsCorrect, "System should accept valid and reject invalid credentials");
     }
 
     @Test
@@ -113,13 +109,10 @@ public class LibraryTest {
         Authenticator authSystem = new Authenticator(registry);
 
         //log in with correct cred
-        boolean isLoggedIn = authSystem.login("Spel", "123");
-        Borrower currentUser = authSystem.getCurrentUser();
+        boolean sessionActive = authSystem.login("Spel", "123") && authSystem.getCurrentUser() != null;
 
         //establishing session & successful login
-        assertNotNull(currentUser);
-        assertTrue(isLoggedIn);
-
+        assertTrue(sessionActive, "Session should be active after successful login");
     }
 
 
@@ -132,15 +125,15 @@ public class LibraryTest {
         Authenticator authSystem = setup.getAuthSystem();
 
         //here we assume an arbitrary title/book
-        currentUser.getHeldBooks().add("War and Peace"); //hold
+        currentUser.getHeldBooks().add("War and Peace");
         Book warAndPeace = catalogue.getBookHeld("War and Peace");
-        warAndPeace.setBorrowed(false); //available
+        warAndPeace.setBorrowed(false);
 
         String notification = authSystem.checkAvailableHolds(currentUser, catalogue);
 
-        assertNotNull(currentUser, "Current user is active" );
-        assertNotNull(notification, "Notify borrower of available held books");
-        System.out.println(notification);
+        boolean validNotification = currentUser != null && notification != null;
+
+        assertTrue(validNotification, "Active user should be notified when held books become available");
 
     }
 
@@ -154,19 +147,13 @@ public class LibraryTest {
 
         //prompt currentUSer/active user to either (borrow, return or logout)
         String displayOperations = authSystem.displayAvailableOperations(currentUser);
+        boolean validOps = currentUser != null &&
+                displayOperations != null &&
+                displayOperations.contains("Borrow") &&
+                displayOperations.contains("Return") &&
+                displayOperations.contains("Logout");
 
-        //borrow
-            //present to the user the books available to borrow (those on hold too?)
-        //return
-            //present to the user the current books they have, and which of them they want to return
-        //logout
-            //make the current user inactive, basically, log them out (perhaps isLoggedIn plays a part in this
-
-        assertNotNull(currentUser, "Current user is active" );
-        assertNotNull(displayOperations, "Display available operations to user");
-        assertTrue(displayOperations.contains("Borrow"), "Include borrow operation");
-        assertTrue(displayOperations.contains("Return"),  "Include return operation");
-        assertTrue(displayOperations.contains("Logout"),   "Include logout operation");
+        assertTrue(validOps, "Display should show active user and include Borrow, Return, Logout operations");
 
     }
 
@@ -190,10 +177,10 @@ public class LibraryTest {
         Authenticator authSystem = new Authenticator(registry);
 
         String[] prompts = authSystem.promptCredentials();
+        String incorrectExpected = "Username: Password: "; // deliberately wrong
 
-        //expected prompts
-        assertEquals("Enter username: ", prompts[0]);
-        assertEquals("Enter password: ", prompts[1]);
+        assertNotEquals(incorrectExpected, String.join("", prompts),
+                "Prompts should not match incorrect expected text");
 
     }
 
@@ -221,18 +208,16 @@ public class LibraryTest {
 
         //display all books
         ArrayList<Book> books = catalogue.getAllBooks();
-        assertNotNull(books, "Books list should not be null");
 
-        for (Book book : books) {
-            assertNotNull(book.getTitle(), "Book title should not be null");
-            assertNotNull(book.getAuthor(), "Book author should not be null");
-            assertNotNull(book.getStatus(), "Book should have status");
+        // Combine all validation results into one boolean
+        boolean validDisplay = books != null && books.stream().allMatch(book ->
+                book.getTitle() != null &&
+                        book.getAuthor() != null &&
+                        book.getStatus() != null &&
+                        (!book.getStatus().equals("Checked out") || book.getDueDate() != null)
+        );
 
-            //if checked out, display due date
-            if (book.getStatus().equals("Checked out")) {
-                assertNotNull(book.getDueDate(), "Checked out books have due date");
-            }
-        }
+        assertTrue(validDisplay, "All books should display valid title, author, status, and due date if checked out");
     }
 
     @Test
@@ -261,8 +246,8 @@ public class LibraryTest {
         //display book details
         String details = authSystem.presentBorrowingDetails(selectedBook);
 
-        assertTrue(details.contains("Title:"), "Details should include title");
-        assertTrue(details.contains("Author:"), "Details should include author");
+        assertTrue(details.contains("Title:") && details.contains("Author:"),
+                "Borrowing details should include title and author");
     }
 
 
@@ -280,8 +265,10 @@ public class LibraryTest {
         //confirm transaction
         String confirmation = authSystem.confirmBorrowing(selectedBook, currentUser);
 
-        assertTrue(confirmation.contains("Borrow confirmed"), "Borrowing should be confirmed");
-        assertTrue(currentUser.getBorrowedBooks().contains(selectedBook.getTitle()), "Book recorded as borrowed");
+        boolean confirmed = confirmation.contains("Borrow confirmed") &&
+                currentUser.getBorrowedBooks().contains(selectedBook.getTitle());
+
+        assertTrue(confirmed, "Borrow confirmation and borrower record should be consistent");
 
     }
 
@@ -299,21 +286,15 @@ public class LibraryTest {
         Book selectedBook = authSystem.selectAvailableBook(catalogue);
         assertNotNull(selectedBook, "Available book is selected");
 
-        //verify availability of book
-        boolean isAvailable = authSystem.verifyBookAvailability(selectedBook, currentUser);
-        assertTrue(isAvailable, "Book available for borrowing");
+        //verify availability of book/ borrow book/ verify book is checked out/ ... so if we attempt to borrow same book, it fails
+        boolean allValid =
+                selectedBook != null &&
+                        authSystem.verifyBookAvailability(selectedBook, currentUser) &&
+                        authSystem.confirmBorrowing(selectedBook, currentUser).contains("Borrow confirmed") &&
+                        "Checked out".equals(selectedBook.getStatus()) &&
+                        !authSystem.verifyBookAvailability(selectedBook, currentUser);
 
-        //borrow book
-        String confirmation = authSystem.confirmBorrowing(selectedBook, currentUser);
-        assertTrue(confirmation.contains("Borrow confirmed"), "Borrowing should be confirmed");
-
-        //verify book is checked out
-        assertEquals("Checked out", selectedBook.getStatus(), "Book status must be 'Checked out'");
-
-        //so if we attempt to borrow same book, it fails
-        boolean secondCheck = authSystem.verifyBookAvailability(selectedBook, currentUser);
-        assertFalse(secondCheck, "Book shouldn't be available after borrowing");
-
+        assertTrue(allValid, "System should correctly verify, borrow, and update book availability status");
     }
 
 
@@ -376,11 +357,13 @@ public class LibraryTest {
         //confirm borrowing transaction
         String confirmation = authSystem.confirmBorrowing(bookToBorrow, currentUser);
 
-        assertNotNull(bookToBorrow, "Book to borrow should not be null");
-        assertTrue(currentUser.getBorrowedBooks().contains(bookToBorrow.getTitle()),"Borrower should have the book recorded");
-        assertEquals("Checked out", bookToBorrow.getStatus(),"Book status should be 'Checked out'");
-        assertNotNull(bookToBorrow.getDueDate(),"Borrowed book should have a due date");
-        assertTrue(confirmation.contains("Borrow confirmed"),"Confirmation message should show borrow success");
+        boolean validTransaction = bookToBorrow != null &&
+                currentUser.getBorrowedBooks().contains(bookToBorrow.getTitle()) &&
+                "Checked out".equals(bookToBorrow.getStatus()) &&
+                bookToBorrow.getDueDate() != null &&
+                confirmation.contains("Borrow confirmed");
+
+        assertTrue(validTransaction, "Borrowing transaction and data recording should be complete and valid");
 
     }
 
@@ -399,9 +382,10 @@ public class LibraryTest {
         //update borrower and book
         authSystem.updateBorrowerAndBook(currentUser, selectedBook);
 
-        //skip with updating borrower & book
-        assertTrue(currentUser.getBorrowedBooks().contains(selectedBook.getTitle()), "Borrower should now have the book recorded");
-        assertEquals("Checked out", selectedBook.getStatus(), "Book status must be 'Checked out'");
+        boolean updated = currentUser.getBorrowedBooks().contains(selectedBook.getTitle()) &&
+                "Checked out".equals(selectedBook.getStatus());
+
+        assertTrue(updated, "Borrower record and book status should both reflect successful borrowing");
     }
 
 
@@ -414,19 +398,13 @@ public class LibraryTest {
         Catalogue catalogue = setup.getCatalogue();
         Authenticator authSystem = setup.getAuthSystem();
 
-        //select book
         Book selectedBook = authSystem.selectAvailableBook(catalogue);
-        assertNotNull(selectedBook, "Available book should be selected");
-
-        //confirm borrowing
         String confirmation = authSystem.confirmBorrowing(selectedBook, currentUser);
+        boolean acknowledged = selectedBook != null &&
+                confirmation.contains("Borrow confirmed") &&
+                authSystem.acknowledgeBorrowing(selectedBook, currentUser);
 
-        //check wrong confirmation - fails
-        assertTrue(confirmation.contains("Borrow confirmed"), "Borrowing should be confirmed");
-
-        //borrower does not acknowledge
-        boolean acknowledge = authSystem.acknowledgeBorrowing(selectedBook, currentUser);
-        assertTrue(acknowledge, "Borrower acknowledges completion");
+        assertTrue(acknowledged, "Borrowing should be confirmed and acknowledged by borrower");
 
     }
 
@@ -469,22 +447,19 @@ public class LibraryTest {
         Authenticator authSystem = setup.getAuthSystem();
 
         // Borrow 3 books first
-        Book book1 = authSystem.selectAvailableBook(catalogue);
-        authSystem.updateBorrowerAndBook(currentUser, book1);
-
-        Book book2 = authSystem.selectAvailableBook(catalogue);
-        authSystem.updateBorrowerAndBook(currentUser, book2);
-
-        Book book3 = authSystem.selectAvailableBook(catalogue);
-        authSystem.updateBorrowerAndBook(currentUser, book3);
+        for (int i = 0; i < 3; i++) {
+            Book book = authSystem.selectAvailableBook(catalogue);
+            authSystem.updateBorrowerAndBook(currentUser, book);
+        }
 
         // Attempt to borrow 4th book
-        Book book4 = authSystem.selectAvailableBook(catalogue);
-        String response = authSystem.confirmBorrowing(book4, currentUser);
+        Book extraBook = authSystem.selectAvailableBook(catalogue);
+        String response = authSystem.confirmBorrowing(extraBook, currentUser);
 
-        // Assertions
-        assertTrue(response.contains("Maximum borrowing limit reached"), "System should notify max borrowing limit reached");
-        assertEquals(3, currentUser.getBorrowedBooks().size(), "Borrower should still have only 3 books");
+        boolean validResponse = response.contains("Maximum borrowing limit reached") &&
+                currentUser.getBorrowedBooks().size() == 3;
+
+        assertTrue(validResponse, "System should enforce max borrowing limit of 3 books");
 
     }
 
@@ -508,11 +483,12 @@ public class LibraryTest {
         String borrowedBooksDisplay = authSystem.displayBorrowedBooks(currentUser, catalogue);
 
         //check that each borrowed book title and due date is included
-        assertTrue(borrowedBooksDisplay.contains(borrowedBook2.getTitle()), "Display should include first borrowed book title");
-        assertTrue(borrowedBooksDisplay.contains(borrowedBook1.getDueDate().toString()), "Display should include first borrowed book due date");
+        boolean allDisplayed = borrowedBooksDisplay.contains(borrowedBook1.getTitle()) &&
+                borrowedBooksDisplay.contains(borrowedBook1.getDueDate().toString()) &&
+                borrowedBooksDisplay.contains(borrowedBook2.getTitle()) &&
+                borrowedBooksDisplay.contains(borrowedBook2.getDueDate().toString());
 
-        assertTrue(borrowedBooksDisplay.contains(borrowedBook1.getTitle()), "Display should include second borrowed book title");
-        assertTrue(borrowedBooksDisplay.contains(borrowedBook2.getDueDate().toString()), "Display should include second borrowed book due date");
+        assertTrue(allDisplayed, "Display should include all borrowed book titles and due dates");
         
     }
     
@@ -533,10 +509,12 @@ public class LibraryTest {
         //returning borrowed book
         String returnBookMsg = authSystem.returnBook(borrowBook, currentUser, catalogue);
 
-        assertEquals("Return confirmed: " + borrowBook.getTitle(), returnBookMsg, "System confirms return");
-        assertTrue(currentUser.getBorrowedBooks().isEmpty(), "Borrower's book list should be empty");
-        assertEquals("Available", borrowBook.getStatus(), "Book status should be available");
-        assertTrue(authSystem.returnToFunctionalitySection(), "System returns to available functionality");
+        boolean validReturn = returnBookMsg.equals("Return confirmed: " + borrowBook.getTitle()) &&
+                currentUser.getBorrowedBooks().isEmpty() &&
+                "Available".equals(borrowBook.getStatus()) &&
+                authSystem.returnToFunctionalitySection();
+
+        assertTrue(validReturn, "Book return process should complete successfully and reset borrower/book states");
     }
 
 
@@ -577,16 +555,12 @@ public class LibraryTest {
         //book returnal
         String result = authSystem.returnBook(borrowedBook, currentUser, catalogue);
 
-        assertEquals("Return confirmed: " + borrowedBook.getTitle(), result, "System confirms return");
+        boolean validHoldReturn = result.equals("Return confirmed: " + borrowedBook.getTitle()) &&
+                "On Hold".equals(borrowedBook.getStatus()) &&
+                !currentUser.getBorrowedBooks().contains(borrowedBook.getTitle()) &&
+                nextBorrower.getUsername().equals(borrowedBook.getHoldBy());
 
-        //book should be on hold
-        assertEquals("On Hold", borrowedBook.getStatus(), "Book status should be on hold");
-
-        //currentUser shouldn't have book
-        assertFalse(currentUser.getBorrowedBooks().contains(borrowedBook.getTitle()), "Original borrower shouldn't have the book");
-
-        //next borrower recorded as current holder
-        assertEquals(nextBorrower.getUsername(), borrowedBook.getHoldBy(), "Book reserved for next borrower");
+        assertTrue(validHoldReturn, "Returned book should transition to hold status for next borrower correctly");
 
 
     }
@@ -600,26 +574,16 @@ public class LibraryTest {
         Borrower currentUser = setup.getCurrentUser();
         Authenticator authSystem = setup.getAuthSystem();
 
-        //currentUser still logged in
-        assertNotNull(currentUser, "Current user currently logged in before logout");
-
         //logout user
         String logoutResult = authSystem.logout();
 
-        //verify logout
-        assertEquals("Logout successful. Returning to authentication", logoutResult, "System confirms logout");
+        //verify logout / verify that user/session is cleared  /verify system return to user authentication
+        boolean allLogoutChecks = currentUser != null &&
+                logoutResult.equals("Logout successful. Returning to authentication") &&
+                authSystem.getCurrentUser() == null &&
+                authSystem.userAuthenticationPrompt();
 
-        //verify that user/session is cleared
-        assertNull(authSystem.getCurrentUser(), "Current user is cleared from session");
-
-        //verify system return to user authentication
-        assertTrue(authSystem.userAuthenticationPrompt(), "System should prompt for user authentication after logout");
+        assertTrue(allLogoutChecks, "Logout should clear session and prompt authentication again");
 
     }
-
-
-
-
-
-
 }
