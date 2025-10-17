@@ -632,13 +632,12 @@ public class LibraryTest {
         Catalogue catalogue = setup.getCatalogue();
         Authenticator authSystem = setup.getAuthSystem();
 
-
         Book book = authSystem.selectAvailableBook(catalogue);
         String result = authSystem.returnBook(book, currentUser, catalogue);
 
-        assertEquals("No books are currently borrowed", result, "Notify borrower that no books currently borrowed");
-
+        assertTrue(result.isEmpty()); //should fail
     }
+
 
     @Test
     @DisplayName("Manage holds on returned books")
