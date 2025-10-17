@@ -222,10 +222,4 @@ public class Authenticator {
         return "Logout successful. Returning to authentication";
     }
 
-    public boolean userAuthenticationPrompt() { return authenticationPrompt; }
-
-
-
-
-
 }

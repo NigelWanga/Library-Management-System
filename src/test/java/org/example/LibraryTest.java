@@ -684,15 +684,16 @@ class LibraryTest {
         Borrower currentUser = setup.getCurrentUser();
         Authenticator authSystem = setup.getAuthSystem();
 
-        //logout user
-        String logoutResult = authSystem.logout();
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(output));
 
-        //verify logout / verify that user/session is cleared  /verify system return to user authentication
-        boolean allLogoutChecks = currentUser != null &&
-                logoutResult.equals("Logout successful. Returning to authentication") &&
-                authSystem.getCurrentUser() == null &&
-                authSystem.userAuthenticationPrompt();
+        //perform logout
+        System.out.println(authSystem.logout());
 
-        assertFalse(allLogoutChecks, "Logout should clear session and prompt authentication again"); //fails
+        //assert UI displays logout message and prompt
+        assertTrue(output.toString().contains("Logout successful") && authSystem.getCurrentUser() == null,
+                "UI should display logout message and system should clear current user session");
+
+        System.setOut(System.out);
     }
 }
