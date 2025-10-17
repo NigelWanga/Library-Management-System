@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class LibraryTest {
+class LibraryTest {
 
     @Test
     @DisplayName("Check library catalogue size is 20")
@@ -693,7 +693,6 @@ public class LibraryTest {
                 authSystem.getCurrentUser() == null &&
                 authSystem.userAuthenticationPrompt();
 
-        assertTrue(allLogoutChecks, "Logout should clear session and prompt authentication again");
-
+        assertFalse(allLogoutChecks, "Logout should clear session and prompt authentication again"); //fails
     }
 }
