@@ -12,7 +12,28 @@ public class Authenticator {
         this.borrowerRegistry = borrowerRegistry;
     }
 
+    //prompt for credentials
+    public void promptCredentials() {
+        System.out.print("Enter username: ");
+        System.out.print("Enter password: ");
+    }
 
+
+    //Capture borrower credentials
+    public String[] captureCredentials() {
+        Scanner scanner = new Scanner(System.in);
+        String username = scanner.nextLine();
+        String password = scanner.nextLine();
+        return new String[]{username, password};
+    }
+
+
+    //validate borrower credentials
+    public boolean validateCredentials(String username, String password) {
+        Borrower borrower = borrowerRegistry.findBorrowerUsername(username);
+        if (borrower == null) { return false; }
+        return borrower.getPassword().equals(password);
+    }
 
 
     public boolean handleInvalidLogin(String username, String password) {
