@@ -618,6 +618,7 @@ public class LibraryTest {
                 authSystem.returnToFunctionalitySection();
 
         assertTrue(validReturn, "Book return process should complete successfully and reset borrower/book states");
+
     }
 
 
