@@ -68,9 +68,11 @@ public class Authenticator {
         }
     }
 
-    public String displayAvailableOperations(Borrower borrower) {
-        return "Available operations: Borrow | Return | Logout";
+
+    public void displayAvailableOperations(Borrower borrower) {
+        System.out.println("Available operations: Borrow | Return | Logout");
     }
+
 
     public String displayBookStatus(Book book, Borrower borrower) {
         if (book.isOnHold() && !borrower.getHeldBooks().contains(book.getTitle())) {

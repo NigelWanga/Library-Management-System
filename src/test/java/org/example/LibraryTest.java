@@ -168,17 +168,19 @@ public class LibraryTest {
         Borrower currentUser = setup.getCurrentUser();
         Authenticator authSystem = setup.getAuthSystem();
 
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(output));
+
         //prompt currentUSer/active user to either (borrow, return or logout)
         authSystem.displayAvailableOperations(currentUser);
 
-        boolean validOps = currentUser != null &&
-                displayOperations != null &&
-                displayOperations.contains("Borrow") &&
-                displayOperations.contains("Return") &&
-                displayOperations.contains("Logout");
+        assertTrue(output.toString().contains("Borrow") &&
+                        output.toString().contains("Return") &&
+                        output.toString().contains("Logout"),
+                "UI should display Borrow, Return, and Logout operations to the user");
 
-        assertTrue(validOps, "Display should show active user and include Borrow, Return, Logout operations");
-
+        // Cleanup
+        System.setOut(System.out);
     }
 
     @Test
