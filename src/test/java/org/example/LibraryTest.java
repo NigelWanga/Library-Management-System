@@ -190,8 +190,14 @@ public class LibraryTest {
         BorrowerRegistry registry = initborrowers.initializeBorrowers();
         Authenticator authSystem = new Authenticator(registry);
 
-        boolean result = authSystem.handleInvalidLogin("invalidUser", "invalidPassword");
-        assertFalse(result, "Expect false for invalid credentials");
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(output));
+
+        authSystem.handleInvalidLogin("invalidUser", "invalidPassword");
+        assertTrue(output.toString().contains("Invalid username or password"),
+                "UI should notify user when login credentials are invalid");
+
+        System.setOut(System.out);
 
     }
 
@@ -202,11 +208,16 @@ public class LibraryTest {
         BorrowerRegistry registry = initborrowers.initializeBorrowers();
         Authenticator authSystem = new Authenticator(registry);
 
-        String[] prompts = authSystem.promptCredentials();
-        String incorrectExpected = "Username: Password: "; // deliberately wrong
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(output));
 
-        assertNotEquals(incorrectExpected, String.join("", prompts),
-                "Prompts should not match incorrect expected text");
+        authSystem.promptCredentials();
+
+        assertTrue(output.toString().contains("Enter username:") &&
+                        output.toString().contains("Enter password:"),
+                "UI should display correct prompts for username and password");
+
+        System.setOut(System.out);
 
     }
 
