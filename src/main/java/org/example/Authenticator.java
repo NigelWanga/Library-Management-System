@@ -58,6 +58,30 @@ public class Authenticator {
         }
     }
 
+    public Borrower loginPrompt(Scanner input) {
+        boolean authenticated = false;
+        Borrower borrower = null;
+
+        while (!authenticated) {
+            System.out.print("Enter username: ");
+            String username = input.nextLine();
+
+            System.out.print("Enter password: ");
+            String password = input.nextLine();
+
+            if (validateCredentials(username, password)) {
+                borrower = borrowerRegistry.findBorrowerUsername(username);
+                authenticated = true;
+                System.out.println("Authentication successful! Welcome, " + borrower.getUsername() + ".");
+            } else {
+                System.out.println("Invalid credentials. Please try again.\n");
+            }
+        }
+
+        return borrower;
+    }
+
+
     public void checkAvailableHolds(Borrower borrower, Catalogue catalogue) {
         for (String heldTitle : borrower.getHeldBooks()) {
             Book heldBook = catalogue.getBookHeld(heldTitle);
@@ -80,6 +104,7 @@ public class Authenticator {
         return book.getStatus();
     }
 
+    public void setCurrentUser(Borrower borrower) { this.currentUser = borrower; }
     public Borrower getCurrentUser() { return currentUser; }
 
 
@@ -102,18 +127,22 @@ public class Authenticator {
     }
 
     public String confirmBorrowing(Book selectedBook, Borrower borrower) { //changed - resp_10
-        if (selectedBook == null) return "No book selected for confirmation";
-        if (!selectedBook.isAvailable()) return "Book is not available";
 
-        //max borrow limit
-        if (borrower.getBorrowedBooks().size() >= 3) {
-            return "Maximum borrowing limit reached";
-        }
+        if (selectedBook == null) { return "No book selected for confirmation."; }
+        if (!selectedBook.isAvailable()) { return "Book is not available."; }
 
-        selectedBook.borrowBook(); //the selected book is borrowed
+        //prevent duplicate borrowing
+        if (borrower.getBorrowedBooks().contains(selectedBook.getTitle())) { return "You have already borrowed this book."; }
+
+        //max borrowing limit
+        if (borrower.getBorrowedBooks().size() >= 3) { return "Maximum borrowing limit reached."; }
+
+        // Update both book and borrower records
+        selectedBook.borrowBook();
         borrower.addBorrowedBook(selectedBook.getTitle());
 
-        return "Borrow confirmed: " + selectedBook.getTitle() + "\nDue Date: " + selectedBook.getDueDate();
+        return "Borrow confirmed: " + selectedBook.getTitle() +
+                "\nDue Date: " + selectedBook.getDueDate();
     }
 
     public boolean verifyBookAvailability(Book book, Borrower borrower) {
@@ -176,33 +205,39 @@ public class Authenticator {
     }
 
     public String returnBook(Book book, Borrower borrower, Catalogue catalogue) { //changed - resp_20
-        if (borrower.getBorrowedBooks().isEmpty()) {
-            return "No books are currently borrowed";
+        if (book == null) {
+            return "No book selected for return.";
         }
 
-        //check for holds
-        if (book == null) {
-            return "No book selected for return";
+        if (borrower == null) {
+            return "No borrower currently logged in.";
+        }
+
+        //check if borrower actually borrowed the book
+        if (!borrower.getBorrowedBooks().contains(book.getTitle())) {
+            return "Cannot return: book not borrowed or does not exist.";
+        }
+
+        //handle if borrower list empty
+        if (borrower.getBorrowedBooks().isEmpty()) {
+            return "No books are currently borrowed.";
         }
 
         String message;
 
+        //if no hold
         if (book.getHoldBy() == null || book.getHoldBy().isEmpty()) {
             book.returnBook(); //resets borrowed, onHold, dueDate
+            borrower.getBorrowedBooks().remove(book.getTitle());
             message = "Return confirmed: " + book.getTitle() + " (no holds pending)";
         } else {
-            String nextUser = book.getHoldBy(); //assume this is the next borrower in queue
+            String nextUser = book.getHoldBy();
             book.setBorrowed(false);
             book.setOnHold(true);
             book.setStatus("On Hold");
+            borrower.getBorrowedBooks().remove(book.getTitle());
             message = "Return confirmed: " + book.getTitle() + " is now On Hold for " + nextUser;
         }
-
-        borrower.removeBorrowedBook(book.getTitle());
-
-        System.out.println(message);
-
-        returnToFunctionalitySection();
 
         return message;
     }
