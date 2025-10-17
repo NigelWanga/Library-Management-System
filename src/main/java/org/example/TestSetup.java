@@ -4,10 +4,10 @@ public class TestSetup {
     private final Catalogue catalogue;
     private final BorrowerRegistry registry;
     private final Authenticator authSystem;
-    private final Borrower currentUser;
+    private Borrower currentUser;
 
 
-    public TestSetup(String username, String password) {
+    public TestSetup(String username, String password) { //for our resp tests
         InitializeLibrary library = new InitializeLibrary();
         this.catalogue = library.initializeLibrary();
 
@@ -23,19 +23,9 @@ public class TestSetup {
         assert currentUser != null : "No active user for " + username;
     }
 
-    public Catalogue getCatalogue() {
-        return catalogue;
-    }
+    public Catalogue getCatalogue() { return catalogue; }
+    public BorrowerRegistry getRegistry() { return registry; }
+    public Authenticator getAuthSystem() { return authSystem; }
+    public Borrower getCurrentUser() { return currentUser; }
 
-    public BorrowerRegistry getRegistry() {
-        return registry;
-    }
-
-    public Authenticator getAuthSystem() {
-        return authSystem;
-    }
-
-    public Borrower getCurrentUser() {
-        return currentUser;
-    }
 }

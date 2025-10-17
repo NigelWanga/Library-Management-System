@@ -5,33 +5,34 @@ import java.util.ArrayList;
 public class Catalogue {
     ArrayList<Book> catalogue;
 
-    public Catalogue(){
-        catalogue = new ArrayList<>();
-    }
-
+    public Catalogue(){ catalogue = new ArrayList<>(); }
     public void addBook(Book book){
         catalogue.add(book);
     }
+    Book getBook(int index){ return catalogue.get(index); }
+    ArrayList<Book> getAllBooks(){ return catalogue; }
+    public int getCatalogueSize(){ return catalogue.size(); }
 
-    Book getBook(int index){
-        return catalogue.get(index);
-    }
-
-    ArrayList<Book> getAllBooks(){
-        return catalogue;
-    }
-
+    //get book held by title
     public Book getBookHeld(String title) {
         for (Book book : catalogue) {
             if (book.getTitle().equals(title)) {
                 return book;
             }
-
         }
         return null;
     }
 
-    public int getCatalogueSize(){
-        return catalogue.size();
+    //the above getBookHeld shares a similar impl as to findBookByTitle, thus I just used it semantically
+
+
+    //searchin for book by title
+    public Book findBookByTitle(String title) {
+        for (Book book : catalogue) {
+            if (book.getTitle().equalsIgnoreCase(title)) {
+                return book;
+            }
+        }
+        return null;
     }
 }

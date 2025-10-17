@@ -47,7 +47,7 @@ public class Book {
     public String getHoldBy() { return onHoldBy; }
 
     public String getStatus() {
-        if (isBorrowed) return "Checked out";
+        if (isBorrowed) return "Checked Out";
         if (isOnHold) return "On Hold";
         return "Available";
     }
