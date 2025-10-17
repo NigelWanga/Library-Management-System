@@ -136,7 +136,7 @@ public class Authenticator {
 
     public boolean returnToFunctionalitySection() { return true; } //changed - resp_16
 
-    public String handleUnavailableBook(Book book, Borrower borrower) {
+    public String handleUnavailableBook(Book book, Borrower borrower) { //changed - resp_17
         if (book == null) return "Book not found.";
 
         if (borrower.getBorrowedBooks().contains(book.getTitle()))

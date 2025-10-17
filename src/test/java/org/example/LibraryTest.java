@@ -517,12 +517,21 @@ public class LibraryTest {
         Catalogue catalogue = setup.getCatalogue();
         Authenticator authSystem = setup.getAuthSystem();
 
-        //borrower borrows book
+        //borrower tries to borrow an already borrowed book
         Book borrowedBook = catalogue.getBookHeld("Treasure Island");
         borrowedBook.borrowBook();
-        String response = authSystem.handleUnavailableBook(borrowedBook, currentUser);
 
-        assertTrue(response.contains("Hold"), "System should handle hold placement properly for unavailable book");
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(output));
+
+        //handle unavailable book - UI should notify user
+        System.out.println(authSystem.handleUnavailableBook(borrowedBook, currentUser));
+
+        //UI shows hold message
+        assertTrue(output.toString().contains("Hold"),
+                "UI should notify borrower about hold placement for unavailable book");
+
+        System.setOut(System.out);
     }
 
     @Test
