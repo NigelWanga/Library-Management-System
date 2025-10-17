@@ -523,7 +523,6 @@ public class LibraryTest {
         String response = authSystem.handleUnavailableBook(borrowedBook, currentUser);
 
         assertTrue(response.contains("Hold"), "System should handle hold placement properly for unavailable book");
-
     }
 
     @Test
