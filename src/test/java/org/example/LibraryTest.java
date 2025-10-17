@@ -492,7 +492,6 @@ public class LibraryTest {
     }
 
 
-
     @Test
     @DisplayName("Check system handling of unavailable book and hold placement")
     void RESP_17_test_01(){
