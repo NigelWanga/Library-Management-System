@@ -19,7 +19,7 @@ public class Borrower {
 
     public String getUsername() {return username; }
     public String getPassword() {return password; }
-    public int getBorrowedBooksCount() {return borrowedBooks.size(); }
+    public int getBorrowedBooksCount() { return borrowedBooks.size(); }
     public ArrayList<String> getBorrowedBooks() { return borrowedBooks; }
     public ArrayList<String> getHeldBooks() { return heldBooks;}
     public void addBorrowedBook(String title) { borrowedBooks.add(title); }

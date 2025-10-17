@@ -227,14 +227,20 @@ public class LibraryTest {
         TestSetup setup = new TestSetup("Nord", "456");
         Borrower currentUser = setup.getCurrentUser();
 
-
         //attribute 1 borrowed book to Nord
         currentUser.getBorrowedBooks().add("War and Peace");
 
-        int count = currentUser.getBorrowedBooksCount();
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(output));
 
-        //fail, since Nord has 1 book
-        assertEquals(1, count, "Borrower should've borrowed 1 book");
+        //display book count to user
+        int count = currentUser.getBorrowedBooksCount();
+        System.out.println("You currently have " + count + " book(s) borrowed.");
+
+        assertTrue(output.toString().contains("You currently have 1 book(s) borrowed"),
+                "UI should display the correct number of borrowed books");
+
+        System.setOut(System.out);
 
     }
 
