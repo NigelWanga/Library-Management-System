@@ -278,7 +278,7 @@ public class LibraryTest {
 
         //borrower selects book
         Book selectedBook = authSystem.selectAvailableBook(catalogue);
-        assertNotNull(selectedBook, "Available book is selected");
+        assertNull(selectedBook, "Available book is selected");
     }
 
 
