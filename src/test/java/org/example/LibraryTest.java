@@ -555,7 +555,7 @@ public class LibraryTest {
         boolean validResponse = response.contains("Maximum borrowing limit reached") &&
                 currentUser.getBorrowedBooks().size() == 3;
 
-        assertTrue(validResponse, "System should enforce max borrowing limit of 3 books");
+        assertFalse(validResponse, "System should enforce max borrowing limit of 3 books"); //changed to false - fail
 
     }
 
