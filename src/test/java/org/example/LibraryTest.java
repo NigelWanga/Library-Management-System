@@ -250,8 +250,6 @@ public class LibraryTest {
         TestSetup setup = new TestSetup("Nord", "456");
         Catalogue catalogue = setup.getCatalogue();
 
-        //display all books
-        ArrayList<Book> books = catalogue.getAllBooks();
 
         // Combine all validation results into one boolean
         boolean validDisplay = books != null && books.stream().allMatch(book ->
