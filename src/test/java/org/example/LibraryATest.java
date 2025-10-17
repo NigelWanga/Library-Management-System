@@ -3,6 +3,9 @@ package org.example;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 
@@ -49,4 +52,52 @@ class LibraryATest {
         assertEquals("Available", gatsbyAvailable.getStatus(), "User2 should see 'Great Gatsby' as available");
     }
 
+    @Test
+    @DisplayName("Initialization and Authentication with Error Handling")
+    void A_TEST_02(){
+        InitializeBorrowers initBorrowers = new InitializeBorrowers();
+        BorrowerRegistry registry = initBorrowers.initializeBorrowers();
+        InitializeLibrary initLibrary = new InitializeLibrary();
+        Catalogue catalogue = initLibrary.initializeLibrary();
+        Authenticator authSystem = new Authenticator(registry);
+
+        //valid login
+        Borrower validUser = registry.findBorrowerUsername("Spel");
+        boolean validLogin = authSystem.validateCredentials(validUser.getUsername(), validUser.getPassword());
+        assertTrue(validLogin, "Valid login should succeed");
+
+        //console output for menu
+        ByteArrayOutputStream menuOut = new ByteArrayOutputStream();
+        PrintStream originalOut = System.out;
+        System.setOut(new PrintStream(menuOut));
+
+        //check menu options displayed after login
+        authSystem.displayAvailableOperations(validUser);
+
+        System.setOut(originalOut);
+        String menuOptions = menuOut.toString().trim();
+        assertNotNull(menuOptions, "Menu options should be displayed after login");
+        assertTrue(menuOptions.contains("Borrow") && menuOptions.contains("Return") && menuOptions.contains("Logout"),
+                "Menu should include Borrow, Return, Logout options");
+
+        //logout valid user
+        authSystem.logout();
+        assertNull(authSystem.getCurrentUser(), "User should be logged out successfully");
+
+        //invalid login attempt
+        Borrower invalidUser = new Borrower("FakeUser", "wrongPass");
+        boolean invalidLogin = authSystem.validateCredentials(invalidUser.getUsername(), invalidUser.getPassword());
+        assertFalse(invalidLogin, "Invalid login should be rejected");
+
+        ByteArrayOutputStream promptOut = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(promptOut));
+
+        //simulate retry prompt
+        authSystem.promptCredentials();
+
+        System.setOut(originalOut);
+        String retryPrompt = promptOut.toString().trim();
+        String expectedPrompt = "Enter username: Enter password:";
+        assertEquals(expectedPrompt, retryPrompt.replaceAll("\\s+", " "), "System should prompt again after invalid login");
+    }
 }
