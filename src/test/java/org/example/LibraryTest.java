@@ -673,7 +673,6 @@ public class LibraryTest {
 
         assertTrue(validHoldReturn, "Returned book should transition to hold status for next borrower correctly");
 
-
     }
 
 
