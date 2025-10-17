@@ -169,7 +169,8 @@ public class LibraryTest {
         Authenticator authSystem = setup.getAuthSystem();
 
         //prompt currentUSer/active user to either (borrow, return or logout)
-        String displayOperations = authSystem.displayAvailableOperations(currentUser);
+        authSystem.displayAvailableOperations(currentUser);
+
         boolean validOps = currentUser != null &&
                 displayOperations != null &&
                 displayOperations.contains("Borrow") &&
