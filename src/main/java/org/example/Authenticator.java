@@ -176,7 +176,7 @@ public class Authenticator {
         return display.trim();
     }
 
-    public String returnBook(Book book, Borrower borrower, Catalogue catalogue) {
+    public String returnBook(Book book, Borrower borrower, Catalogue catalogue) { //changed - resp_20
         if (borrower.getBorrowedBooks().isEmpty()) {
             return "No books are currently borrowed";
         }
