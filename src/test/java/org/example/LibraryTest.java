@@ -580,15 +580,19 @@ public class LibraryTest {
         authSystem.updateBorrowerAndBook(currentUser, borrowedBook2);
 
         //display borrowed books
-        String borrowedBooksDisplay = authSystem.displayBorrowedBooks(currentUser, catalogue);
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(output));
 
-        //check that each borrowed book title and due date is included
-        boolean allDisplayed = borrowedBooksDisplay.contains(borrowedBook1.getTitle()) &&
-                borrowedBooksDisplay.contains(borrowedBook1.getDueDate().toString()) &&
-                borrowedBooksDisplay.contains(borrowedBook2.getTitle()) &&
-                borrowedBooksDisplay.contains(borrowedBook2.getDueDate().toString());
+        System.out.println(authSystem.displayBorrowedBooks(currentUser, catalogue));
 
-        assertTrue(allDisplayed, "Display should include all borrowed book titles and due dates");
+        //assert that UI contains both titles and their due dates
+        assertTrue(output.toString().contains(borrowedBook1.getTitle()) &&
+                        output.toString().contains(borrowedBook1.getDueDate().toString()) &&
+                        output.toString().contains(borrowedBook2.getTitle()) &&
+                        output.toString().contains(borrowedBook2.getDueDate().toString()),
+                "UI should display all borrowed books with due dates");
+
+        System.setOut(System.out);
     }
     
     

@@ -161,7 +161,7 @@ public class Authenticator {
     }
 
 
-    public String displayBorrowedBooks(Borrower borrower, Catalogue catalogue) {
+    public String displayBorrowedBooks(Borrower borrower, Catalogue catalogue) { //changed - resp_19
         if (borrower.getBorrowedBooks().isEmpty()) {
             return "No books are currently borrowed";
         }
