@@ -227,6 +227,7 @@ public class LibraryTest {
         TestSetup setup = new TestSetup("Nord", "456");
         Borrower currentUser = setup.getCurrentUser();
 
+
         //attribute 1 borrowed book to Nord
         currentUser.getBorrowedBooks().add("War and Peace");
 
