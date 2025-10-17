@@ -36,18 +36,7 @@ public class Authenticator {
     }
 
 
-    public boolean handleInvalidLogin(String username, String password) {
-        boolean isValid = validateCredentials(username, password);
 
-        if (!isValid) {
-            System.out.println("Authentication failed: Invalid username or password");
-            System.out.println("Please try again");
-            return false;
-        }
-
-        System.out.println("Authentication successful");
-        return true;
-    }
 
     public boolean login(String username, String password) {
         if (validateCredentials(username, password)) {

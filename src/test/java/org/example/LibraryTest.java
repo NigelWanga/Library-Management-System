@@ -195,20 +195,20 @@ public class LibraryTest {
 
     }
 
-//    @Test
-//    @DisplayName("Check for wrong authentication prompt text")
-//    void RESP_07_test_02(){
-//        InitializeBorrowers initborrowers = new InitializeBorrowers();
-//        BorrowerRegistry registry = initborrowers.initializeBorrowers();
-//        Authenticator authSystem = new Authenticator(registry);
-//
-//        String[] prompts = authSystem.promptCredentials();
-//        String incorrectExpected = "Username: Password: "; // deliberately wrong
-//
-//        assertNotEquals(incorrectExpected, String.join("", prompts),
-//                "Prompts should not match incorrect expected text");
-//
-//    }
+    @Test
+    @DisplayName("Check for wrong authentication prompt text")
+    void RESP_07_test_02(){
+        InitializeBorrowers initborrowers = new InitializeBorrowers();
+        BorrowerRegistry registry = initborrowers.initializeBorrowers();
+        Authenticator authSystem = new Authenticator(registry);
+
+        String[] prompts = authSystem.promptCredentials();
+        String incorrectExpected = "Username: Password: "; // deliberately wrong
+
+        assertNotEquals(incorrectExpected, String.join("", prompts),
+                "Prompts should not match incorrect expected text");
+
+    }
 
     @Test
     @DisplayName("Display borrower current book count")
