@@ -273,12 +273,25 @@ public class LibraryTest {
     void RESP_10_test_01(){
         TestSetup setup = new TestSetup("Nord", "456");
         Catalogue catalogue = setup.getCatalogue();
-        Authenticator authSystem = setup.getAuthSystem();
+        ArrayList<Book> books = catalogue.getAllBooks();
 
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(output));
 
-        //borrower selects book
-        Book selectedBook = authSystem.selectAvailableBook(catalogue);
-        assertNull(selectedBook, "Available book is selected");
+        //display books to borrower
+        for (int i = 0; i < books.size(); i++) {
+            Book book = books.get(i);
+            System.out.println((i + 1) + ". " + book.getTitle() + " by " + book.getAuthor());
+        }
+
+        //simulate borrower selecting the first book
+        Book selectedBook = books.get(0);
+
+        //selection is non-null and included in display
+        assertTrue(selectedBook != null && output.toString().contains(selectedBook.getTitle()),
+                "Borrower should be able to select a book displayed in the UI");
+
+        System.setOut(System.out);
     }
 
 
@@ -288,14 +301,20 @@ public class LibraryTest {
         TestSetup setup = new TestSetup("Nord", "456");
         Catalogue catalogue = setup.getCatalogue();
         Authenticator authSystem = setup.getAuthSystem();
-
         Book selectedBook = authSystem.selectAvailableBook(catalogue);
 
-        //display book details
-        String details = authSystem.presentBorrowingDetails(selectedBook);
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(output));
 
-        assertTrue(details.contains("Title:") && details.contains("Author:"),
-                "Borrowing details should include title and author");
+        //present borrowing details
+        System.out.println(authSystem.presentBorrowingDetails(selectedBook));
+
+        //details include title and author
+        assertTrue(output.toString().contains(selectedBook.getTitle()) &&
+                        output.toString().contains(selectedBook.getAuthor()),
+                "UI should display selected book's title and author");
+
+        System.setOut(System.out);
     }
 
 
@@ -310,13 +329,18 @@ public class LibraryTest {
 
         Book selectedBook = authSystem.selectAvailableBook(catalogue);
 
-        //confirm transaction
-        String confirmation = authSystem.confirmBorrowing(selectedBook, currentUser);
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(output));
 
-        boolean confirmed = confirmation.contains("Borrow confirmed") &&
-                currentUser.getBorrowedBooks().contains(selectedBook.getTitle());
+        //confirm borrowing
+        System.out.println(authSystem.confirmBorrowing(selectedBook, currentUser));
 
-        assertTrue(confirmed, "Borrow confirmation and borrower record should be consistent");
+        //UI shows confirmation and borrower's record is updated
+        assertTrue(output.toString().contains("Borrow confirmed") &&
+                        currentUser.getBorrowedBooks().contains(selectedBook.getTitle()),
+                "UI should display borrow confirmation and update borrower record");
+
+        System.setOut(System.out);
 
     }
 

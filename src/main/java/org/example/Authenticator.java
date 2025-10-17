@@ -92,7 +92,7 @@ public class Authenticator {
         return null;
     }
 
-    public String presentBorrowingDetails(Book selectedBook) {
+    public String presentBorrowingDetails(Book selectedBook) { //changed - resp_10
         if (selectedBook == null) return "No book selected";
 
         return "Selected Book Details:\n" +
@@ -101,7 +101,7 @@ public class Authenticator {
                 "Status: " + selectedBook.getStatus();
     }
 
-    public String confirmBorrowing(Book selectedBook, Borrower borrower) {
+    public String confirmBorrowing(Book selectedBook, Borrower borrower) { //changed - resp_10
         if (selectedBook == null) return "No book selected for confirmation";
         if (!selectedBook.isAvailable()) return "Book is not available";
 
