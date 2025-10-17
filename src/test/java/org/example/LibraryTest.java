@@ -149,11 +149,9 @@ public class LibraryTest {
         Book warAndPeace = catalogue.getBookHeld("War and Peace");
         warAndPeace.setBorrowed(false);
 
-        String notification = authSystem.checkAvailableHolds(currentUser, catalogue);
+        authSystem.checkAvailableHolds(currentUser, catalogue);
 
-        boolean validNotification = currentUser != null && notification != null;
-
-        assertTrue(validNotification, "Active user should be notified when held books become available");
+        assertTrue(output, "Active user should be notified when held books become available");
 
     }
 
