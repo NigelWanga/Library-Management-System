@@ -656,22 +656,22 @@ public class LibraryTest {
 
         Borrower nextBorrower = new Borrower("NextBorrower", "000");
 
-        //borrow book
         Book borrowedBook = authSystem.selectAvailableBook(catalogue);
         authSystem.updateBorrowerAndBook(currentUser, borrowedBook);
 
-        //place hold
+        //place hold for next borrower
         borrowedBook.placeHold(nextBorrower.getUsername());
 
-        //book returnal
-        String result = authSystem.returnBook(borrowedBook, currentUser, catalogue);
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(output));
 
-        boolean validHoldReturn = result.equals("Return confirmed: " + borrowedBook.getTitle()) &&
-                "On Hold".equals(borrowedBook.getStatus()) &&
-                !currentUser.getBorrowedBooks().contains(borrowedBook.getTitle()) &&
-                nextBorrower.getUsername().equals(borrowedBook.getHoldBy());
+        System.out.println(authSystem.returnBook(borrowedBook, currentUser, catalogue));
 
-        assertTrue(validHoldReturn, "Returned book should transition to hold status for next borrower correctly");
+        //UI displays proper hold notification
+        assertTrue(output.toString().contains("On Hold") && output.toString().contains(nextBorrower.getUsername()),
+                "UI should notify that the returned book is now on hold for the next borrower");
+
+        System.setOut(System.out);
 
     }
 

@@ -132,9 +132,8 @@ public class Authenticator {
         }
     }
 
-    public boolean acknowledgeBorrowing(Book book, Borrower borrower) { return true; } //changed - resp_16
-
-    public boolean returnToFunctionalitySection() { return true; } //changed - resp_16
+    public void acknowledgeBorrowing(Book book, Borrower borrower) {} //changed - resp_16
+    public void returnToFunctionalitySection() {} //changed - resp_16
 
     public String handleUnavailableBook(Book book, Borrower borrower) { //changed - resp_17
         if (book == null) return "Book not found.";
@@ -186,24 +185,26 @@ public class Authenticator {
             return "No book selected for return";
         }
 
-        //update status & borrower acc
+        String message;
+
         if (book.getHoldBy() == null || book.getHoldBy().isEmpty()) {
-            book.returnBook(); //reset borrowed, onHold, dueDate
+            book.returnBook(); //resets borrowed, onHold, dueDate
+            message = "Return confirmed: " + book.getTitle() + " (no holds pending)";
         } else {
+            String nextUser = book.getHoldBy(); //assume this is the next borrower in queue
             book.setBorrowed(false);
             book.setOnHold(true);
             book.setStatus("On Hold");
+            message = "Return confirmed: " + book.getTitle() + " is now On Hold for " + nextUser;
         }
 
         borrower.removeBorrowedBook(book.getTitle());
 
-        //return confirmation
-        String confirmation = "Return confirmed: " + book.getTitle();
+        System.out.println(message);
 
-        //acknowledge & return to functionality
         returnToFunctionalitySection();
 
-        return confirmation;
+        return message;
     }
 
     public String logout() {
@@ -221,9 +222,7 @@ public class Authenticator {
         return "Logout successful. Returning to authentication";
     }
 
-    public boolean userAuthenticationPrompt() {
-        return authenticationPrompt;
-    }
+    public boolean userAuthenticationPrompt() { return authenticationPrompt; }
 
 
 

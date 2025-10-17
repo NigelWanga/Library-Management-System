@@ -43,7 +43,7 @@ public class Book {
     public boolean isBorrowed() { return isBorrowed; }
     public void setOnHold(boolean hold) { isOnHold = hold; }
     public LocalDate getDueDate() { return dueDate; }
-    public void placeHold(String borrowerUser) { onHoldBy = borrowerUser; }
+    public void placeHold(String borrowerUser) { onHoldBy = borrowerUser; } //changed - resp_22
     public String getHoldBy() { return onHoldBy; }
 
     public String getStatus() {
