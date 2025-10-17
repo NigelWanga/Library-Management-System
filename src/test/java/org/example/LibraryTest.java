@@ -589,7 +589,6 @@ public class LibraryTest {
                 borrowedBooksDisplay.contains(borrowedBook2.getDueDate().toString());
 
         assertTrue(allDisplayed, "Display should include all borrowed book titles and due dates");
-        
     }
     
     
