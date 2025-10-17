@@ -632,10 +632,17 @@ public class LibraryTest {
         Catalogue catalogue = setup.getCatalogue();
         Authenticator authSystem = setup.getAuthSystem();
 
-        Book book = authSystem.selectAvailableBook(catalogue);
-        String result = authSystem.returnBook(book, currentUser, catalogue);
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(output));
 
-        assertTrue(result.isEmpty()); //should fail
+        Book book = authSystem.selectAvailableBook(catalogue);
+        System.out.println(authSystem.returnBook(book, currentUser, catalogue));
+
+        //assert that UI displays the correct message
+        assertTrue(output.toString().contains("No books are currently borrowed"),
+                "UI should notify borrower that no books are currently borrowed");
+
+        System.setOut(System.out);
     }
 
 
