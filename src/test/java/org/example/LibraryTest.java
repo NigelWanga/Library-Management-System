@@ -3,6 +3,7 @@ package org.example;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.io.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
@@ -62,29 +63,46 @@ public class LibraryTest {
     @Test
     @DisplayName("Prompt borrower for authentication details")
     void RESP_03_test_01(){
-        InitializeBorrowers initborrowers = new InitializeBorrowers();
-        BorrowerRegistry registry = initborrowers.initializeBorrowers();
-        Authenticator authSystem = new Authenticator(registry);
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(output));
 
-        String[] prompts = authSystem.promptCredentials();
-        String expected = "Enter username: Enter password: ";
+        Authenticator authSystem = new Authenticator(null); //registry not needed for prompt
+        authSystem.promptCredentials(); //method should print prompts
 
-        //expected prompts
-        assertEquals(expected, String.join("", prompts), "Authentication prompts should match expected sequence");
+        String consoleOutput = output.toString().trim();
+
+        //expected sequence of prompts
+        String expected = "Enter username:\nEnter password:";
+
+        assertTrue(consoleOutput.replaceAll("\\s+", " ").contains(expected.replaceAll("\\s+", " ")),
+                "Console output should contain both prompts in the correct order");
+
+        System.setOut(System.out);
     }
 
     @Test
     @DisplayName("Permit borrower to input username and password")
     void RESP_03_test_02(){
-        InitializeBorrowers initborrowers = new InitializeBorrowers();
-        BorrowerRegistry registry = initborrowers.initializeBorrowers();
-        Authenticator authSystem = new Authenticator(registry);
+        //arrange simulated input
+        String simulatedInput = "Spel\n123\n";
+        System.setIn(new ByteArrayInputStream(simulatedInput.getBytes()));
 
-        //input simulation
-        String[] inputs = authSystem.captureCredentials("Spel", "123");
-        String combined = inputs[0] + ":" + inputs[1];
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(output));
 
-        assertEquals("Spel:123", combined, "Captured username and password should match expected values");
+        Authenticator authSystem = new Authenticator(null);
+
+        //getting our credentials
+        String[] captured = authSystem.captureCredentials();
+
+        assertEquals(
+                "Spel 123",
+                String.join(" ", captured),
+                "Captured credentials should match expected username and password"
+        );
+
+        System.setIn(System.in);
+        System.setOut(System.out);
     }
 
 
@@ -100,6 +118,7 @@ public class LibraryTest {
 
         assertTrue(allValidationsCorrect, "System should accept valid and reject invalid credentials");
     }
+
 
     @Test
     @DisplayName("Set authenticated borrower as current user - active session")
@@ -169,20 +188,20 @@ public class LibraryTest {
 
     }
 
-    @Test
-    @DisplayName("Check for wrong authentication prompt text")
-    void RESP_07_test_02(){
-        InitializeBorrowers initborrowers = new InitializeBorrowers();
-        BorrowerRegistry registry = initborrowers.initializeBorrowers();
-        Authenticator authSystem = new Authenticator(registry);
-
-        String[] prompts = authSystem.promptCredentials();
-        String incorrectExpected = "Username: Password: "; // deliberately wrong
-
-        assertNotEquals(incorrectExpected, String.join("", prompts),
-                "Prompts should not match incorrect expected text");
-
-    }
+//    @Test
+//    @DisplayName("Check for wrong authentication prompt text")
+//    void RESP_07_test_02(){
+//        InitializeBorrowers initborrowers = new InitializeBorrowers();
+//        BorrowerRegistry registry = initborrowers.initializeBorrowers();
+//        Authenticator authSystem = new Authenticator(registry);
+//
+//        String[] prompts = authSystem.promptCredentials();
+//        String incorrectExpected = "Username: Password: "; // deliberately wrong
+//
+//        assertNotEquals(incorrectExpected, String.join("", prompts),
+//                "Prompts should not match incorrect expected text");
+//
+//    }
 
     @Test
     @DisplayName("Display borrower current book count")
