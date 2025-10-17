@@ -542,20 +542,24 @@ public class LibraryTest {
         Catalogue catalogue = setup.getCatalogue();
         Authenticator authSystem = setup.getAuthSystem();
 
-        // Borrow 3 books first
+        //borrow 3 books first
         for (int i = 0; i < 3; i++) {
             Book book = authSystem.selectAvailableBook(catalogue);
             authSystem.updateBorrowerAndBook(currentUser, book);
         }
 
-        // Attempt to borrow 4th book
+        //attempt to borrow 4th book
         Book extraBook = authSystem.selectAvailableBook(catalogue);
-        String response = authSystem.confirmBorrowing(extraBook, currentUser);
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(output));
 
-        boolean validResponse = response.contains("Maximum borrowing limit reached") &&
-                currentUser.getBorrowedBooks().size() == 3;
+        System.out.println(authSystem.confirmBorrowing(extraBook, currentUser));
 
-        assertFalse(validResponse, "System should enforce max borrowing limit of 3 books"); //changed to false - fail
+        //UI shows max borrowing limit message
+        assertTrue(output.toString().contains("Maximum borrowing limit reached"),
+                "UI should notify borrower that maximum borrowing limit has been reached");
+
+        System.setOut(System.out);
 
     }
 
