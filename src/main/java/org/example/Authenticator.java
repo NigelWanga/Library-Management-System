@@ -59,14 +59,13 @@ public class Authenticator {
         }
     }
 
-    public String checkAvailableHolds(Borrower borrower, Catalogue catalogue) {
+    public void checkAvailableHolds(Borrower borrower, Catalogue catalogue) {
         for (String heldTitle : borrower.getHeldBooks()) {
             Book heldBook = catalogue.getBookHeld(heldTitle);
             if (heldBook != null && heldBook.isAvailable()) {
-                return "Book available: " + heldBook.getTitle() + "by " + heldBook.getAuthor();
+                System.out.println("Book available: " + heldBook.getTitle() + " by " + heldBook.getAuthor());
             }
         }
-        return null;
     }
 
     public String displayAvailableOperations(Borrower borrower) {

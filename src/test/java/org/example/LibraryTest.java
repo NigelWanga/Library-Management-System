@@ -144,6 +144,10 @@ public class LibraryTest {
         Borrower currentUser = setup.getCurrentUser();
         Authenticator authSystem = setup.getAuthSystem();
 
+        //console output
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(output));
+
         //here we assume an arbitrary title/book
         currentUser.getHeldBooks().add("War and Peace");
         Book warAndPeace = catalogue.getBookHeld("War and Peace");
@@ -151,8 +155,9 @@ public class LibraryTest {
 
         authSystem.checkAvailableHolds(currentUser, catalogue);
 
-        assertTrue(output, "Active user should be notified when held books become available");
+        assertTrue(output.toString().contains("War and Peace"), "Active user should be notified when held books become available");
 
+        System.setOut(System.out);
     }
 
     @Test
