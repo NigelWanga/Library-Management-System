@@ -132,9 +132,9 @@ public class Authenticator {
         }
     }
 
-    public boolean acknowledgeBorrowing(Book book, Borrower borrower) { return true; }
+    public boolean acknowledgeBorrowing(Book book, Borrower borrower) { return true; } //changed - resp_16
 
-    public boolean returnToFunctionalitySection() { return true; }
+    public boolean returnToFunctionalitySection() { return true; } //changed - resp_16
 
     public String handleUnavailableBook(Book book, Borrower borrower) {
         if (book == null) return "Book not found.";

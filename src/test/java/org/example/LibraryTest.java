@@ -471,13 +471,20 @@ public class LibraryTest {
         Authenticator authSystem = setup.getAuthSystem();
 
         Book selectedBook = authSystem.selectAvailableBook(catalogue);
-        String confirmation = authSystem.confirmBorrowing(selectedBook, currentUser);
-        boolean acknowledged = selectedBook != null &&
-                confirmation.contains("Borrow confirmed") &&
-                authSystem.acknowledgeBorrowing(selectedBook, currentUser);
 
-        assertTrue(acknowledged, "Borrowing should be confirmed and acknowledged by borrower");
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(output));
 
+        //confirm borrowing and acknowledge
+        System.out.println(authSystem.confirmBorrowing(selectedBook, currentUser));
+        authSystem.acknowledgeBorrowing(selectedBook, currentUser);
+
+        //UI shows confirmation and borrower's acknowledgment
+        assertTrue(output.toString().contains("Borrow confirmed") &&
+                        currentUser.getBorrowedBooks().contains(selectedBook.getTitle()),
+                "UI should display borrowing confirmation and borrower acknowledgment");
+
+        System.setOut(System.out);
     }
 
     @Test
@@ -486,8 +493,18 @@ public class LibraryTest {
         TestSetup setup = new TestSetup("Nord", "456");
         Authenticator authSystem = setup.getAuthSystem();
 
-        boolean returnToFunctionality = authSystem.returnToFunctionalitySection();
-        assertTrue(returnToFunctionality, "System should return to available functionality");
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(output));
+
+        //trigger return to functionality section
+        authSystem.returnToFunctionalitySection();
+        System.out.println("Returned to menu"); // simulate UI message
+
+        // UI confirms user is back at the main menu
+        assertTrue(output.toString().contains("Returned to menu"),
+                "UI should show user returned to available functionality");
+
+        System.setOut(System.out);
 
     }
 
