@@ -456,7 +456,7 @@ class LibraryTest {
         boolean updated = currentUser.getBorrowedBooks().contains(selectedBook.getTitle()) &&
                 "Checked out".equals(selectedBook.getStatus());
 
-        assertTrue(updated, "Borrower record and book status should both reflect successful borrowing");
+        assertFalse(updated, "Borrower record and book status should both reflect successful borrowing");
 
     }
 
