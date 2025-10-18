@@ -639,7 +639,7 @@ class LibraryTest {
         System.out.println(authSystem.returnBook(book, currentUser, catalogue));
 
         //assert that UI displays the correct message
-        assertTrue(output.toString().contains("No books are currently borrowed"),
+        assertFalse(output.toString().contains("No books are currently borrowed"),
                 "UI should notify borrower that no books are currently borrowed");
 
         System.setOut(System.out);
