@@ -457,6 +457,7 @@ class LibraryTest {
                 "Checked out".equals(selectedBook.getStatus());
 
         assertTrue(updated, "Borrower record and book status should both reflect successful borrowing");
+
     }
 
 
