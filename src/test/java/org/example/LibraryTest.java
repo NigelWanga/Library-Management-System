@@ -436,7 +436,6 @@ class LibraryTest {
                 confirmation.contains("Borrow confirmed");
 
         assertTrue(validTransaction, "Borrowing transaction and data recording should be complete and valid");
-
     }
 
 
