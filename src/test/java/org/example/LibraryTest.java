@@ -348,7 +348,7 @@ class LibraryTest {
 
     @Test
     @DisplayName("Check system verification on book availability")
-    void RESP_11_test_01(){
+    void RESP_11_test_01(){ //*
         TestSetup setup = new TestSetup("Nord", "456");
         Catalogue catalogue = setup.getCatalogue();
         Borrower currentUser = setup.getCurrentUser();
@@ -417,7 +417,7 @@ class LibraryTest {
 
     @Test
     @DisplayName("Check recording of borrowing transaction and borrower information")
-    void RESP_14_test_01(){
+    void RESP_14_test_01(){ //*
         TestSetup setup = new TestSetup("Nord", "456");
         Borrower currentUser = setup.getCurrentUser();
         Catalogue catalogue = setup.getCatalogue();
@@ -442,7 +442,7 @@ class LibraryTest {
 
     @Test
     @DisplayName("Check borrower account update & book availability status")
-    void RESP_15_test_01(){
+    void RESP_15_test_01(){ //*
         TestSetup setup = new TestSetup("Nord", "456");
         Borrower currentUser = setup.getCurrentUser();
         Catalogue catalogue = setup.getCatalogue();
@@ -626,7 +626,7 @@ class LibraryTest {
 
     @Test
     @DisplayName("Manage borrower who has no books currently borrowed")
-    void RESP_21_test_01(){
+    void RESP_21_test_01(){ //*
         TestSetup setup = new TestSetup("Aeil", "789");
         Borrower currentUser = setup.getCurrentUser();
         Catalogue catalogue = setup.getCatalogue();
