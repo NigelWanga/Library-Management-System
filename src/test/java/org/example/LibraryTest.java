@@ -643,6 +643,7 @@ class LibraryTest {
                 "UI should notify borrower that no books are currently borrowed");
 
         System.setOut(System.out);
+
     }
 
 
