@@ -24,14 +24,14 @@ class LibraryTest {
 
     }
     @Test
-    @DisplayName("Check library catalogue for valid book - Great Gatsby.")
+    @DisplayName("Check library catalogue for valid book - The Great Gatsby.")
     void RESP_01_test_02(){
         InitializeLibrary library = new InitializeLibrary();
         Catalogue catalogue = library.initializeLibrary();
 
         Book book = catalogue.getBook(0);
         String title = book.getTitle();
-        assertEquals("Great Gatsby",title);
+        assertEquals("The Great Gatsby",title);
     }
 
     @Test
@@ -84,7 +84,7 @@ class LibraryTest {
     @DisplayName("Permit borrower to input username and password")
     void RESP_03_test_02(){
         //arrange simulated input
-        String simulatedInput = "Spel\n123\n";
+        String simulatedInput = "alice\npass123\n";
         System.setIn(new ByteArrayInputStream(simulatedInput.getBytes()));
 
         ByteArrayOutputStream output = new ByteArrayOutputStream();
@@ -96,7 +96,7 @@ class LibraryTest {
         String[] captured = authSystem.captureCredentials();
 
         assertEquals(
-                "Spel 123",
+                "alice pass123",
                 String.join(" ", captured),
                 "Captured credentials should match expected username and password"
         );
@@ -114,7 +114,7 @@ class LibraryTest {
         BorrowerRegistry registry = initborrowers.initializeBorrowers();
         Authenticator authSystem = new Authenticator(registry);
 
-        boolean allValidationsCorrect = authSystem.validateCredentials("Spel", "123") &&
+        boolean allValidationsCorrect = authSystem.validateCredentials("alice", "pass123") &&
                 !authSystem.validateCredentials("invalidUser", "invalidPassword");
 
         assertTrue(allValidationsCorrect, "System should accept valid and reject invalid credentials");
@@ -129,7 +129,7 @@ class LibraryTest {
         Authenticator authSystem = new Authenticator(registry);
 
         //log in with correct cred
-        boolean sessionActive = authSystem.login("Spel", "123") && authSystem.getCurrentUser() != null;
+        boolean sessionActive = authSystem.login("alice", "pass123") && authSystem.getCurrentUser() != null;
 
         //establishing session & successful login
         assertTrue(sessionActive, "Session should be active after successful login");
@@ -139,7 +139,7 @@ class LibraryTest {
     @Test
     @DisplayName("Check if borrower holds have become available & display noti & book info")
     void RESP_05_test_01(){
-        TestSetup setup = new TestSetup("Spel", "123");
+        TestSetup setup = new TestSetup("alice", "pass123");
         Catalogue catalogue = setup.getCatalogue();
         Borrower currentUser = setup.getCurrentUser();
         Authenticator authSystem = setup.getAuthSystem();
@@ -163,7 +163,7 @@ class LibraryTest {
     @Test
     @DisplayName("Check if operations presented - borrow, return, logout")
     void RESP_06_test_01(){
-        TestSetup setup = new TestSetup("Spel", "123");
+        TestSetup setup = new TestSetup("alice", "pass123");
         Catalogue catalogue = setup.getCatalogue();
         Borrower currentUser = setup.getCurrentUser();
         Authenticator authSystem = setup.getAuthSystem();
@@ -224,10 +224,10 @@ class LibraryTest {
     @Test
     @DisplayName("Display borrower current book count")
     void RESP_08_test_01(){
-        TestSetup setup = new TestSetup("Nord", "456");
+        TestSetup setup = new TestSetup("bob", "pass456");
         Borrower currentUser = setup.getCurrentUser();
 
-        //attribute 1 borrowed book to Nord
+        //attribute 1 borrowed book to bob
         currentUser.getBorrowedBooks().add("War and Peace");
 
         ByteArrayOutputStream output = new ByteArrayOutputStream();
@@ -247,7 +247,7 @@ class LibraryTest {
     @Test
     @DisplayName("Check for display of books in collection")
     void RESP_09_test_01(){
-        TestSetup setup = new TestSetup("Nord", "456");
+        TestSetup setup = new TestSetup("bob", "pass456");
         Catalogue catalogue = setup.getCatalogue();
         ArrayList<Book> books = catalogue.getAllBooks();
 
@@ -271,7 +271,7 @@ class LibraryTest {
     @Test
     @DisplayName("Check for available book selection")
     void RESP_10_test_01(){
-        TestSetup setup = new TestSetup("Nord", "456");
+        TestSetup setup = new TestSetup("bob", "pass456");
         Catalogue catalogue = setup.getCatalogue();
         ArrayList<Book> books = catalogue.getAllBooks();
 
@@ -298,7 +298,7 @@ class LibraryTest {
     @Test
     @DisplayName("Check for presentation of selected book and borrowing details")
     void RESP_10_test_02(){
-        TestSetup setup = new TestSetup("Nord", "456");
+        TestSetup setup = new TestSetup("bob", "pass456");
         Catalogue catalogue = setup.getCatalogue();
         Authenticator authSystem = setup.getAuthSystem();
         Book selectedBook = authSystem.selectAvailableBook(catalogue);
@@ -322,7 +322,7 @@ class LibraryTest {
     @Test
     @DisplayName("Check for borrower confirmation")
     void RESP_10_test_03(){
-        TestSetup setup = new TestSetup("Nord", "456");
+        TestSetup setup = new TestSetup("bob", "pass456");
         Catalogue catalogue = setup.getCatalogue();
         Borrower currentUser = setup.getCurrentUser();
         Authenticator authSystem = setup.getAuthSystem();
@@ -349,7 +349,7 @@ class LibraryTest {
     @Test
     @DisplayName("Check system verification on book availability")
     void RESP_11_test_01(){ //*
-        TestSetup setup = new TestSetup("Nord", "456");
+        TestSetup setup = new TestSetup("bob", "pass456");
         Catalogue catalogue = setup.getCatalogue();
         Borrower currentUser = setup.getCurrentUser();
         Authenticator authSystem = setup.getAuthSystem();
@@ -374,7 +374,7 @@ class LibraryTest {
     @Test
     @DisplayName("Check for verification eligibility to borrow book")
     void RESP_12_test_01(){
-        TestSetup setup = new TestSetup("Nord", "456");
+        TestSetup setup = new TestSetup("bob", "pass456");
         Borrower currentUser = setup.getCurrentUser();
         Authenticator authSystem = setup.getAuthSystem();
 
@@ -395,7 +395,7 @@ class LibraryTest {
     @Test
     @DisplayName("Check due date calculation")
     void RESP_13_test_01(){
-        TestSetup setup = new TestSetup("Nord", "456");
+        TestSetup setup = new TestSetup("bob", "pass456");
         Borrower currentUser = setup.getCurrentUser();
         Catalogue catalogue = setup.getCatalogue();
 
@@ -418,7 +418,7 @@ class LibraryTest {
     @Test
     @DisplayName("Check recording of borrowing transaction and borrower information")
     void RESP_14_test_01(){ //*
-        TestSetup setup = new TestSetup("Nord", "456");
+        TestSetup setup = new TestSetup("bob", "pass456");
         Borrower currentUser = setup.getCurrentUser();
         Catalogue catalogue = setup.getCatalogue();
         Authenticator authSystem = setup.getAuthSystem();
@@ -442,7 +442,7 @@ class LibraryTest {
     @Test
     @DisplayName("Check borrower account update & book availability status")
     void RESP_15_test_01(){ //*
-        TestSetup setup = new TestSetup("Nord", "456");
+        TestSetup setup = new TestSetup("bob", "pass456");
         Borrower currentUser = setup.getCurrentUser();
         Catalogue catalogue = setup.getCatalogue();
         Authenticator authSystem = setup.getAuthSystem();
@@ -465,7 +465,7 @@ class LibraryTest {
     @Test
     @DisplayName("Check borrowing confirmation and borrower acknowledgment")
     void RESP_16_test_01(){
-        TestSetup setup = new TestSetup("Nord", "456");
+        TestSetup setup = new TestSetup("bob", "pass456");
         Borrower currentUser = setup.getCurrentUser();
         Catalogue catalogue = setup.getCatalogue();
         Authenticator authSystem = setup.getAuthSystem();
@@ -490,7 +490,7 @@ class LibraryTest {
     @Test
     @DisplayName("Check system returns to available functionality after borrowing")
     void RESP_16_test_02(){
-        TestSetup setup = new TestSetup("Nord", "456");
+        TestSetup setup = new TestSetup("bob", "pass456");
         Authenticator authSystem = setup.getAuthSystem();
 
         ByteArrayOutputStream output = new ByteArrayOutputStream();
@@ -512,13 +512,13 @@ class LibraryTest {
     @Test
     @DisplayName("Check system handling of unavailable book and hold placement")
     void RESP_17_test_01(){
-        TestSetup setup = new TestSetup("Nord", "456");
+        TestSetup setup = new TestSetup("bob", "pass456");
         Borrower currentUser = setup.getCurrentUser();
         Catalogue catalogue = setup.getCatalogue();
         Authenticator authSystem = setup.getAuthSystem();
 
         //borrower tries to borrow an already borrowed book
-        Book borrowedBook = catalogue.getBookHeld("Treasure Island");
+        Book borrowedBook = catalogue.getBookHeld("Ulysses");
         borrowedBook.borrowBook();
 
         ByteArrayOutputStream output = new ByteArrayOutputStream();
@@ -537,7 +537,7 @@ class LibraryTest {
     @Test
     @DisplayName("Check borrower - has borrowed max of 3 books")
     void RESP_18_test_01(){
-        TestSetup setup = new TestSetup("Nord", "456");
+        TestSetup setup = new TestSetup("bob", "pass456");
         Borrower currentUser = setup.getCurrentUser();
         Catalogue catalogue = setup.getCatalogue();
         Authenticator authSystem = setup.getAuthSystem();
@@ -568,7 +568,7 @@ class LibraryTest {
     @Test
     @DisplayName("Check that system displays borrower's current borrowed books w/ due dates")
     void RESP_19_test_01(){
-        TestSetup setup = new TestSetup("Aeil", "789");
+        TestSetup setup = new TestSetup("charlie", "pass789");
         Borrower currentUser = setup.getCurrentUser();
         Catalogue catalogue = setup.getCatalogue();
         Authenticator authSystem = setup.getAuthSystem();
@@ -600,7 +600,7 @@ class LibraryTest {
     @Test
     @DisplayName("Check for borrower book return process ")
     void RESP_20_test_01(){
-        TestSetup setup = new TestSetup("Aeil", "789");
+        TestSetup setup = new TestSetup("charlie", "pass789");
         Borrower currentUser = setup.getCurrentUser();
         Catalogue catalogue = setup.getCatalogue();
         Authenticator authSystem = setup.getAuthSystem();
@@ -627,7 +627,7 @@ class LibraryTest {
     @Test
     @DisplayName("Manage borrower who has no books currently borrowed")
     void RESP_21_test_01(){ //*
-        TestSetup setup = new TestSetup("Aeil", "789");
+        TestSetup setup = new TestSetup("charlie", "pass789");
         Borrower currentUser = setup.getCurrentUser();
         Catalogue catalogue = setup.getCatalogue();
         Authenticator authSystem = setup.getAuthSystem();
@@ -650,7 +650,7 @@ class LibraryTest {
     @Test
     @DisplayName("Manage holds on returned books")
     void RESP_22_test_01(){
-        TestSetup setup = new TestSetup("Aeil", "789");
+        TestSetup setup = new TestSetup("charlie", "pass789");
         Borrower currentUser = setup.getCurrentUser();
         Catalogue catalogue = setup.getCatalogue();
         Authenticator authSystem = setup.getAuthSystem();
@@ -681,7 +681,7 @@ class LibraryTest {
     @Test
     @DisplayName("Check successful logout of user, and return to user authentication")
     void RESP_23_test_01(){
-        TestSetup setup = new TestSetup("Aeil", "789");
+        TestSetup setup = new TestSetup("charlie", "pass789");
         Borrower currentUser = setup.getCurrentUser();
         Authenticator authSystem = setup.getAuthSystem();
 

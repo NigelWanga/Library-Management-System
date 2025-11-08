@@ -22,11 +22,11 @@ class LibraryATest {
 
         Authenticator authSystem = new Authenticator(registry);
 
-        //User1 (Spel) logs in and borrows "Great Gatsby" - this is how it appears in initializeLibrary
-        Borrower user1 = registry.findBorrowerUsername("Spel");
+        //User1 (alice) logs in and borrows "The Great Gatsby" - this is how it appears in initializeLibrary
+        Borrower user1 = registry.findBorrowerUsername("alice");
         assertTrue(authSystem.validateCredentials(user1.getUsername(), user1.getPassword()));
 
-        Book gatsby = catalogue.findBookByTitle("Great Gatsby");
+        Book gatsby = catalogue.findBookByTitle("The Great Gatsby");
         String borrowConfirmation = authSystem.confirmBorrowing(gatsby, user1);
         assertTrue(borrowConfirmation.contains("Borrow confirmed"), "User1 should successfully borrow the book");
 
@@ -34,12 +34,12 @@ class LibraryATest {
         authSystem.logout();
         assertNull(authSystem.getCurrentUser(), "Current user should be null after logout");
 
-        //User2(Nord) logs in and sees the book as unavailable
-        Borrower user2 = registry.findBorrowerUsername("Nord");
+        //User2(bob) logs in and sees the book as unavailable
+        Borrower user2 = registry.findBorrowerUsername("bob");
         assertTrue(authSystem.validateCredentials(user2.getUsername(), user2.getPassword()));
 
-        Book gatsbyForUser2 = catalogue.findBookByTitle("Great Gatsby");
-        assertEquals("Checked Out", gatsbyForUser2.getStatus(), "User2 should see 'Great Gatsby' as checked out");
+        Book gatsbyForUser2 = catalogue.findBookByTitle("The Great Gatsby");
+        assertEquals("Checked Out", gatsbyForUser2.getStatus(), "User2 should see 'The Great Gatsby' as checked out");
 
         //User1 logs back in and returns the book
         authSystem.validateCredentials(user1.getUsername(), user1.getPassword());
@@ -48,8 +48,8 @@ class LibraryATest {
 
         //User2 logs in again and sees the book as available
         authSystem.validateCredentials(user2.getUsername(), user2.getPassword());
-        Book gatsbyAvailable = catalogue.findBookByTitle("Great Gatsby");
-        assertEquals("Available", gatsbyAvailable.getStatus(), "User2 should see 'Great Gatsby' as available");
+        Book gatsbyAvailable = catalogue.findBookByTitle("The Great Gatsby");
+        assertEquals("Available", gatsbyAvailable.getStatus(), "User2 should see 'The Great Gatsby' as available");
     }
 
     @Test
@@ -62,7 +62,7 @@ class LibraryATest {
         Authenticator authSystem = new Authenticator(registry);
 
         //valid login
-        Borrower validUser = registry.findBorrowerUsername("Spel");
+        Borrower validUser = registry.findBorrowerUsername("alice");
         boolean validLogin = authSystem.validateCredentials(validUser.getUsername(), validUser.getPassword());
         assertTrue(validLogin, "Valid login should succeed");
 

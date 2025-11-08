@@ -5,9 +5,9 @@ public class InitializeBorrowers {
     BorrowerRegistry borrowerRegistry = new BorrowerRegistry();
 
     public BorrowerRegistry initializeBorrowers() {
-        borrowerRegistry.addBorrower(new Borrower("Spel", "123"));
-        borrowerRegistry.addBorrower(new Borrower("Nord", "456"));
-        borrowerRegistry.addBorrower(new Borrower("Aeil", "789"));
+        borrowerRegistry.addBorrower(new Borrower("alice", "pass123"));
+        borrowerRegistry.addBorrower(new Borrower("bob", "pass456"));
+        borrowerRegistry.addBorrower(new Borrower("charlie", "pass789"));
         return borrowerRegistry;
     }
 }
