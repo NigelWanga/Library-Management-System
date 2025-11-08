@@ -4,6 +4,7 @@ public class InitializeLibrary {
 
     Catalogue catalogue = new Catalogue();
 
+    //baseline
     public Catalogue initializeLibrary(){
         catalogue.addBook(new Book("The Great Gatsby", "F. Scott FitzGerald"));
         catalogue.addBook(new Book("1984", "George Orwell"));
