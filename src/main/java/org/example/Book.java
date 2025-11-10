@@ -11,7 +11,7 @@ public class Book {
     String onHoldBy;
     String status;
 
-    Book(String title, String author){
+    public Book(String title, String author){
         this.title = title;
         this.author = author;
         isBorrowed = false;
