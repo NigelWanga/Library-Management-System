@@ -205,25 +205,27 @@ public class Authenticator {
     }
 
     public String returnBook(Book book, Borrower borrower, Catalogue catalogue) { //changed - resp_20
-        if (book == null) {
-            return "No book selected for return.";
-        }
-
-        if (borrower == null) {
-            return "No borrower currently logged in.";
-        }
+        if (book == null) { return "No book selected for return."; }
+        if (borrower == null) { return "No borrower currently logged in."; }
 
         //check if borrower actually borrowed the book
-        if (!borrower.getBorrowedBooks().contains(book.getTitle())) {
-            return "Cannot return: book not borrowed or does not exist.";
-        }
+        if (!borrower.getBorrowedBooks().contains(book.getTitle())) { return "Cannot return: book not borrowed or does not exist."; }
 
         //handle if borrower list empty
-        if (borrower.getBorrowedBooks().isEmpty()) {
-            return "No books are currently borrowed.";
-        }
+        if (borrower.getBorrowedBooks().isEmpty()) { return "No books are currently borrowed."; }
 
         String message;
+
+        //for multiple holds queue processing
+        if (book.hasQueuedHolds()) {
+            String nextUser = book.popHold();
+            book.setBorrowed(false);
+            book.setOnHold(true);
+            book.onHoldBy = nextUser;
+            book.setStatus("On Hold");
+            borrower.getBorrowedBooks().remove(book.getTitle());
+            return nextUser + " should be notified that " + book.getTitle() + " is now available";
+        }
 
         //if no hold
         if (book.getHoldBy() == null || book.getHoldBy().isEmpty()) {
@@ -238,7 +240,6 @@ public class Authenticator {
             borrower.getBorrowedBooks().remove(book.getTitle());
             message = "Return confirmed: " + book.getTitle() + " is now On Hold for " + nextUser;
         }
-
         return message;
     }
 

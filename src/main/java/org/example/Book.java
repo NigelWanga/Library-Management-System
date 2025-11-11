@@ -1,6 +1,8 @@
 package org.example;
 
 import java.time.LocalDate;
+import java.util.LinkedList;
+import java.util.Queue;
 
 public class Book {
     String title;
@@ -11,6 +13,8 @@ public class Book {
     String onHoldBy;
     String status;
 
+    Queue<String> holdQueue = new LinkedList<>(); //for multiple holds queue processing
+
     public Book(String title, String author){
         this.title = title;
         this.author = author;
@@ -19,11 +23,8 @@ public class Book {
         dueDate = null;
         onHoldBy = null;
     }
-    public String getTitle(){
-        return title;
-    }
+    public String getTitle(){ return title; }
     public String getAuthor(){ return author; }
-
     public boolean isAvailable() { return !isBorrowed; }
 
     //setting the max borrow period as 14 days
@@ -53,4 +54,10 @@ public class Book {
     }
 
     public void setStatus(String status) { this.status = status; }
+
+    //for multiple holds queue processing
+    public void addHoldQueue(String username){ holdQueue.add(username); }
+    public boolean hasQueuedHolds() { return holdQueue != null && !holdQueue.isEmpty(); }
+    public String peekHold() { if (holdQueue == null) return null; return holdQueue.peek(); } //FIFO logic - just checks next in queue
+    public String popHold() { if (holdQueue == null) return null; return holdQueue.poll(); }  //FIFO logic - removes next in queue
 }
