@@ -26,9 +26,11 @@ public class LibrarySteps {
 
     @Given("a library with the book {string} by {string}")
     public void a_library_with_the_book_by(String title, String author) {
-        catalogue = new Catalogue();
-        registry = new BorrowerRegistry();
-        authenticator = new Authenticator(registry);
+        if (catalogue == null) {
+            catalogue = new Catalogue();
+            registry = new BorrowerRegistry();
+            authenticator = new Authenticator(registry);
+        }
 
         book = new Book(title, author);
         catalogue.addBook(book);
@@ -100,5 +102,19 @@ public class LibrarySteps {
         String check = selected.peekHold();
         assertEquals(username, check, "first at hold queue should be expected user");
     }
+
+   @Then("{string} should have {int} borrowed books")
+    public void should_have_borrowed_books(String username, int num) {
+        Borrower borrower = registry.findBorrowerUsername(username);
+        assertEquals(num, borrower.getBorrowedBooksCount(), username + " should have " + num + " borrowed books");
+   }
+
+   @Then("{string} cannot borrow {string}")
+    public void cannot_borrow(String username, String title) {
+        Book selected = catalogue.findBookByTitle(title);
+        Borrower borrower = authenticator.getCurrentUser();
+        lastBorrow = authenticator.confirmBorrowing(selected, borrower);
+        assertTrue(lastBorrow.toLowerCase().contains("limit"), "Borrowing blocked due to limit");
+   }
 
 }

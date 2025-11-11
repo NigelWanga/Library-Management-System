@@ -61,3 +61,42 @@ Feature: Library Management System
     And "bob" logs out
 
     Then "charlie" should now be first in the hold queue
+
+  Scenario: Interaction between borrowing limits and holds
+    Given a library with the book "Ulysses" by "James Joyce"
+    And a library with the book "The Odyssey" by "Homer"
+    And a library with the book "Jane Eyre" by "Charlotte Brontë"
+    And a library with the book "Pride and Prejudice" by "Jane Austen"
+
+    And a registered user "alice" with password "pass123"
+    And a registered user "bob" with password "pass456"
+
+    #alice borrows 3 books, reaches borrowing limit
+    When "alice" logs in with password "pass123"
+    And "alice" borrows "Ulysses"
+    And "alice" borrows "The Odyssey"
+    And "alice" borrows "Jane Eyre"
+
+    Then "alice" should have 3 borrowed books
+    And "alice" cannot borrow "Pride and Prejudice"
+
+    #alice can place a hold even at limit
+    And "alice" places a hold on "Pride and Prejudice"
+    And "alice" logs out
+
+    #bob borrows Pride and Prejudice
+    When "bob" logs in with password "pass456"
+    And "bob" borrows "Pride and Prejudice"
+    And "bob" logs out
+
+    #alice returns one of her books → drops below limit
+    When "alice" logs in with password "pass123"
+    And "alice" returns "Ulysses"
+    And "alice" logs out
+
+    #bob returns Pride and Prejudice
+    When "bob" logs in with password "pass456"
+    And "bob" returns "Pride and Prejudice"
+
+    #alice should now be notified that Pride and Prejudice is available
+    Then "alice" should be notified that "Pride and Prejudice" is now available
