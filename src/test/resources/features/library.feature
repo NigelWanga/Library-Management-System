@@ -100,3 +100,20 @@ Feature: Library Management System
 
     #alice should now be notified that Pride and Prejudice is available
     Then "alice" should be notified that "Pride and Prejudice" is now available
+
+
+  Scenario: No books borrowed and the system displays an informative message
+    Given a library with the book "Animal Farm" by "George Orwell"
+    And a library with the book "Wuthering Heights" by "Emily Brontë"
+    And a registered user "alice" with password "pass123"
+    And a registered user "bob" with password "pass456"
+
+
+    When "alice" logs in with password "pass123"
+    Then "alice" should see no borrowed books
+    And all books should be available
+    And "alice" logs out
+
+    When "bob" logs in with password "pass456"
+    Then "bob" should see no borrowed books
+    And all books should be available

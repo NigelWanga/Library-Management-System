@@ -117,4 +117,19 @@ public class LibrarySteps {
         assertTrue(lastBorrow.toLowerCase().contains("limit"), "Borrowing blocked due to limit");
    }
 
+   @Then("{string} should see no borrowed books")
+    public void should_see_no_borrowed_books(String username) {
+        Borrower borrower = registry.findBorrowerUsername(username);
+        assertNotNull(borrower, "Borrower should exist");
+        assertEquals(0, borrower.getBorrowedBooksCount(), username + " should have no borrowed books");
+
+   }
+
+   @Then("all books should be available")
+    public void all_books_should_be_available() {
+        for (Book b : catalogue.getAllBooks()) {
+            assertTrue(b.isAvailable(), "Book " + b.getTitle() + " should be available");
+        }
+   }
+
 }

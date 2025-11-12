@@ -10,7 +10,7 @@ public class Catalogue {
         catalogue.add(book);
     }
     Book getBook(int index){ return catalogue.get(index); }
-    ArrayList<Book> getAllBooks(){ return catalogue; }
+    public ArrayList<Book> getAllBooks(){ return catalogue; }
 
     public void displayAllBooks(){
         if (catalogue.isEmpty()) {
