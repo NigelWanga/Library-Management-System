@@ -245,14 +245,14 @@ public class Authenticator {
 
     public String logout() {
         //logout msg
-        System.out.println("Logout successful. Returning to authentication");
+        //System.out.println("Logout successful. Returning to authentication");
 
         //clear session
         currentUser = null;
 
         //authentication prompt
         authenticationPrompt = true;
-        promptCredentials();
+        //promptCredentials();
 
         //confirmation
         return "Logout successful. Returning to authentication";
