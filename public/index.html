@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="dashboard">
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <h1>📚 Library Management System</h1>
+            <div class="user-info">
+                <span id="current-user" data-testid="current-user"></span>
+                <button id="logout-btn" data-testid="logout-btn" class="btn btn-secondary">
+                    Logout
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="user-stats">
+                <h3>My Account</h3>
+                <div class="stat">
+                    <span class="stat-label">Books Borrowed:</span>
+                    <span id="borrowed-count" data-testid="borrowed-count" class="stat-value">0/3</span>
+                </div>
+            </div>
+
+            <nav class="nav-menu">
+                <button class="nav-btn active" data-view="all-books" data-testid="view-all-books">
+                    📖 All Books
+                </button>
+                <button class="nav-btn" data-view="my-books" data-testid="view-my-books">
+                    📚 My Borrowed Books
+                </button>
+                <button class="nav-btn" data-view="notifications" data-testid="view-notifications">
+                    🔔 Notifications
+                    <span id="notification-badge" class="badge"></span>
+                </button>
+            </nav>
+        </aside>
+
+        <!-- Content Area -->
+        <section class="content-area">
+            <!-- Success/Error Messages -->
+            <div id="message-container" class="message-container"></div>
+
+            <!-- All Books View -->
+            <div id="all-books-view" class="view active">
+                <h2>Available Books</h2>
+                <div id="books-list" class="books-grid"></div>
+            </div>
+
+            <!-- My Borrowed Books View -->
+            <div id="my-books-view" class="view">
+                <h2>My Borrowed Books</h2>
+                <div id="borrowed-books-list" class="borrowed-list"></div>
+            </div>
+
+            <!-- Notifications View -->
+            <div id="notifications-view" class="view">
+                <h2>Notifications</h2>
+                <div id="notifications-list" class="notifications-list"></div>
+            </div>
+        </section>
+    </main>
+</div>
+<script>
+    // Immediately check auth before loading anything else
+    (async function() {
+      try {
+        const response = await fetch('/api/current-user');
+        const data = await response.json();
+
+        if (!data.loggedIn) {
+          // Not logged in - redirect immediately
+          window.location.replace('/');
+          return;
+        }
+      } catch (error) {
+        window.location.replace('/');
+        return;
+      }
+    })();
+</script>
+<script src="app.js"></script>
+</body>
+</html>

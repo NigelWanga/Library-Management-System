@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library Login</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="login-container">
+    <div class="login-card">
+        <h1>📚 Library Management System</h1>
+        <p class="subtitle">Please login to continue</p>
+
+        <form id="login-form">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input
+                        type="text"
+                        id="username"
+                        name="username"
+                        placeholder="Enter username"
+                        data-testid="username-input"
+                        required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="Enter password"
+                        data-testid="password-input"
+                        required
+                >
+            </div>
+
+            <button type="submit" id="login-btn" data-testid="login-btn">
+                Login
+            </button>
+        </form>
+
+        <div id="error-message" class="error-message"></div>
+
+        <div class="test-accounts">
+            <p><strong>Test Accounts:</strong></p>
+            <p>alice / pass123</p>
+            <p>bob / pass456</p>
+            <p>charlie / pass789</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    const loginForm = document.getElementById('login-form');
+    const errorMessage = document.getElementById('error-message');
+
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+
+      try {
+        const response = await fetch('/api/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          window.location.href = '/library';
+        } else {
+          errorMessage.textContent = result.message || 'Invalid credentials';
+          errorMessage.style.display = 'block';
+        }
+      } catch (error) {
+        errorMessage.textContent = 'Login failed. Please try again.';
+        errorMessage.style.display = 'block';
+      }
+    });
+</script>
+</body>
+</html>
