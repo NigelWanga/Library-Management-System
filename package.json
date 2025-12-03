@@ -1,0 +1,29 @@
+{
+  "name": "a3",
+  "version": "1.0.0",
+  "description": "Library Management System - Assignment 3",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NigelWanga/A1-Matalanga-Nigel-101227580.git"
+  },
+  "keywords": ["library", "management", "express", "cypress"],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/NigelWanga/A1-Matalanga-Nigel-101227580/issues"
+  },
+  "homepage": "https://github.com/NigelWanga/A1-Matalanga-Nigel-101227580#readme",
+  "dependencies": {
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "cypress": "^14.5.4"
+  }
+}
