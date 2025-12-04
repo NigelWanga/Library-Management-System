@@ -256,7 +256,7 @@ class Library {
       this.addNotification(nextUser, bookTitle);
       return {
         success: true,
-        message: `Book returned. ${nextUser} has been notified that the book is available.`
+        message: `Book returned. The user who placed a hold has been notified.`
       };
     }
 

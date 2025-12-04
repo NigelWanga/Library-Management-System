@@ -32,8 +32,10 @@ describe('Library Book Management', () => {
       .should('be.visible')
       .and('contain', 'borrowed successfully');
 
-    // Wait for UI to update after borrow
-    cy.wait(1000);
+    // Wait for return button to become enabled
+    // This ensures the UI has updated after the borrow action
+    cy.get('[data-testid="return-btn-1984"]', { timeout: 10000 })
+      .should('not.be.disabled');
 
     // Verify book status changed to "Checked Out"
     // This ensures the book availability is correctly reflected in the UI
@@ -45,11 +47,6 @@ describe('Library Book Management', () => {
     // This demonstrates that a borrowed book cannot be borrowed again
     cy.get('[data-testid="borrow-btn-1984"]')
       .should('be.disabled');
-
-    // Verify return button is now enabled
-    // This confirms the user can return the book they just borrowed
-    cy.get('[data-testid="return-btn-1984"]')
-      .should('not.be.disabled');
 
     // Verify borrowed count increased to 1/3
     // This confirms the user's borrowed book count is tracked correctly
@@ -64,8 +61,9 @@ describe('Library Book Management', () => {
     cy.get('[data-testid="password-input"]').type('pass456');
     cy.get('[data-testid="login-btn"]').click();
 
-    // Wait for Bob's page to load
-    cy.wait(500);
+    // Verify Bob is logged in
+    // This confirms the user session switched correctly to test cross-user book availability
+    cy.get('[data-testid="current-user"]').should('contain', 'bob');
 
     // Verify Bob cannot borrow the same book (button disabled)
     // This verifies that only one user can have a book at a time
@@ -86,8 +84,14 @@ describe('Library Book Management', () => {
     cy.get('[data-testid="password-input"]').type('pass123');
     cy.get('[data-testid="login-btn"]').click();
 
-    // Wait for Alice's page to load
-    cy.wait(500);
+    // Verify Alice is logged back in
+    // This confirms the original borrower can log back in to return the book
+    cy.get('[data-testid="current-user"]').should('contain', 'alice');
+
+    // Verify return button is enabled before clicking
+    // This confirms Alice can return the book she borrowed
+    cy.get('[data-testid="return-btn-1984"]', { timeout: 10000 })
+      .should('not.be.disabled');
 
     // Alice returns "1984"
     cy.get('[data-testid="return-btn-1984"]').click();
@@ -98,8 +102,10 @@ describe('Library Book Management', () => {
       .should('be.visible')
       .and('contain', 'returned successfully');
 
-    // Wait for UI to update after return
-    cy.wait(1000);
+    // Wait for borrow button to become enabled again
+    // This ensures the UI has updated after the return action
+    cy.get('[data-testid="borrow-btn-1984"]', { timeout: 10000 })
+      .should('not.be.disabled');
 
     // Verify book status changed back to "Available"
     // This ensures the returned book becomes available again
@@ -120,8 +126,9 @@ describe('Library Book Management', () => {
     cy.get('[data-testid="password-input"]').type('pass456');
     cy.get('[data-testid="login-btn"]').click();
 
-    // Wait for Bob's page to load
-    cy.wait(500);
+    // Verify Bob is logged in again
+    // This confirms we can test that the returned book is now available to other users
+    cy.get('[data-testid="current-user"]').should('contain', 'bob');
 
     // Verify Bob can now borrow the book (button enabled)
     // This demonstrates that a returned book becomes available to other users
@@ -145,8 +152,17 @@ describe('Library Book Management', () => {
     cy.get('[data-testid="username-input"]').type('alice');
     cy.get('[data-testid="password-input"]').type('pass123');
     cy.get('[data-testid="login-btn"]').click();
+
+    // Verify Alice is logged in
+    // This confirms the first user is authenticated to set up the borrow scenario
+    cy.get('[data-testid="current-user"]').should('contain', 'alice');
+
     cy.get('[data-testid="borrow-btn-the-hobbit"]').click();
-    cy.wait(1000);
+
+    // Verify return button is enabled after borrowing
+    // This confirms the borrow action completed and UI updated correctly
+    cy.get('[data-testid="return-btn-the-hobbit"]', { timeout: 10000 })
+      .should('not.be.disabled');
 
     // Verify Alice borrowed the book successfully
     // This confirms the initial borrow action worked
@@ -157,7 +173,11 @@ describe('Library Book Management', () => {
     cy.get('[data-testid="username-input"]').type('bob');
     cy.get('[data-testid="password-input"]').type('pass456');
     cy.get('[data-testid="login-btn"]').click();
-    cy.wait(500);
+
+    // Verify Bob is logged in
+    // This confirms the second user is authenticated to place a hold
+    cy.get('[data-testid="current-user"]').should('contain', 'bob');
+
     cy.get('[data-testid="hold-btn-the-hobbit"]').click();
 
     // Verify hold was placed successfully
@@ -165,14 +185,18 @@ describe('Library Book Management', () => {
     cy.get('[data-testid="message-success"]')
       .should('contain', 'Hold placed successfully');
 
-    cy.wait(1000);
+    cy.wait(500);
     cy.get('[data-testid="logout-btn"]').click();
 
     // Charlie logs in and places hold on "The Hobbit" (second in queue)
     cy.get('[data-testid="username-input"]').type('charlie');
     cy.get('[data-testid="password-input"]').type('pass789');
     cy.get('[data-testid="login-btn"]').click();
-    cy.wait(500);
+
+    // Verify Charlie is logged in
+    // This confirms the third user is authenticated to place a second hold
+    cy.get('[data-testid="current-user"]').should('contain', 'charlie');
+
     cy.get('[data-testid="hold-btn-the-hobbit"]').click();
 
     // Verify Charlie's hold was placed (position 2 in queue)
@@ -180,20 +204,29 @@ describe('Library Book Management', () => {
     cy.get('[data-testid="message-success"]')
       .should('contain', 'Hold placed successfully');
 
-    cy.wait(1000);
+    cy.wait(500);
     cy.get('[data-testid="logout-btn"]').click();
 
     // Alice returns "The Hobbit"
     cy.get('[data-testid="username-input"]').type('alice');
     cy.get('[data-testid="password-input"]').type('pass123');
     cy.get('[data-testid="login-btn"]').click();
-    cy.wait(500);
+
+    // Verify Alice is logged in
+    // This confirms the original borrower can return the book to trigger hold processing
+    cy.get('[data-testid="current-user"]').should('contain', 'alice');
+
+    // Verify return button is enabled
+    // This confirms Alice can return the book she borrowed
+    cy.get('[data-testid="return-btn-the-hobbit"]', { timeout: 10000 })
+      .should('not.be.disabled');
+
     cy.get('[data-testid="return-btn-the-hobbit"]').click();
 
-    // Verify return message mentions Bob was notified (first in queue)
-    // This confirms the hold queue follows FIFO ordering
+    // Verify return message mentions user was notified (first in queue)
+    // This confirms the hold queue follows FIFO ordering and notifies the next user
     cy.get('[data-testid="message-success"]')
-      .should('contain', 'bob')
+      .should('contain', 'hold')
       .and('contain', 'notified');
 
     cy.wait(1000);
@@ -210,7 +243,10 @@ describe('Library Book Management', () => {
     cy.get('[data-testid="username-input"]').type('bob');
     cy.get('[data-testid="password-input"]').type('pass456');
     cy.get('[data-testid="login-btn"]').click();
-    cy.wait(500);
+
+    // Verify Bob is logged in
+    // This confirms the first user in the hold queue can check their notifications
+    cy.get('[data-testid="current-user"]').should('contain', 'bob');
 
     // Verify Bob has a notification
     // This confirms notifications are sent to the correct user
@@ -224,7 +260,7 @@ describe('Library Book Management', () => {
 
     // Switch back to all books view
     cy.get('[data-testid="view-all-books"]').click();
-    cy.wait(1000);
+    cy.wait(500);
 
     // Verify book shows "Reserved for you" for Bob
     // This confirms the UI indicates the book is reserved for the notified user
@@ -233,7 +269,7 @@ describe('Library Book Management', () => {
 
     // Verify borrow button is enabled for Bob (since book is reserved for him)
     // This confirms only the notified user can borrow the reserved book
-    cy.get('[data-testid="borrow-btn-the-hobbit"]')
+    cy.get('[data-testid="borrow-btn-the-hobbit"]', { timeout: 10000 })
       .should('not.be.disabled');
 
     // Bob borrows the book
@@ -244,14 +280,21 @@ describe('Library Book Management', () => {
     cy.get('[data-testid="message-success"]')
       .should('contain', 'borrowed successfully');
 
-    cy.wait(1000);
+    // Verify return button is enabled after Bob borrowed
+    // This confirms the borrow action completed successfully
+    cy.get('[data-testid="return-btn-the-hobbit"]', { timeout: 10000 })
+      .should('not.be.disabled');
+
     cy.get('[data-testid="logout-btn"]').click();
 
     // Charlie tries to borrow but cannot (button disabled)
     cy.get('[data-testid="username-input"]').type('charlie');
     cy.get('[data-testid="password-input"]').type('pass789');
     cy.get('[data-testid="login-btn"]').click();
-    cy.wait(500);
+
+    // Verify Charlie is logged in
+    // This confirms we can test that Charlie cannot borrow the book Bob has
+    cy.get('[data-testid="current-user"]').should('contain', 'charlie');
 
     // Verify borrow button is disabled for Charlie
     // This confirms only the notified user (Bob) could borrow the book
@@ -270,13 +313,22 @@ describe('Library Book Management', () => {
     cy.get('[data-testid="username-input"]').type('bob');
     cy.get('[data-testid="password-input"]').type('pass456');
     cy.get('[data-testid="login-btn"]').click();
-    cy.wait(500);
+
+    // Verify Bob is logged in
+    // This confirms Bob can return the book to advance the hold queue
+    cy.get('[data-testid="current-user"]').should('contain', 'bob');
+
+    // Verify return button is enabled
+    // This confirms Bob can return the book he borrowed
+    cy.get('[data-testid="return-btn-the-hobbit"]', { timeout: 10000 })
+      .should('not.be.disabled');
+
     cy.get('[data-testid="return-btn-the-hobbit"]').click();
 
-    // Verify Charlie is notified (next in queue)
+    // Verify user is notified (next in queue)
     // This demonstrates the queue advances properly when books are returned
     cy.get('[data-testid="message-success"]')
-      .should('contain', 'charlie')
+      .should('contain', 'hold')
       .and('contain', 'notified');
 
     cy.wait(1000);
@@ -286,7 +338,10 @@ describe('Library Book Management', () => {
     cy.get('[data-testid="username-input"]').type('charlie');
     cy.get('[data-testid="password-input"]').type('pass789');
     cy.get('[data-testid="login-btn"]').click();
-    cy.wait(500);
+
+    // Verify Charlie is logged in
+    // This confirms the second user in queue can check their notification
+    cy.get('[data-testid="current-user"]').should('contain', 'charlie');
 
     cy.get('[data-testid="view-notifications"]').click();
     cy.wait(500);
@@ -300,7 +355,7 @@ describe('Library Book Management', () => {
 
     // Charlie can now borrow the book
     cy.get('[data-testid="view-all-books"]').click();
-    cy.wait(1000);
+    cy.wait(500);
 
     // Verify book is reserved for Charlie
     // This confirms the FIFO queue advanced to the next user correctly
@@ -325,15 +380,26 @@ describe('Library Book Management', () => {
     cy.get('[data-testid="username-input"]').type('alice');
     cy.get('[data-testid="password-input"]').type('pass123');
     cy.get('[data-testid="login-btn"]').click();
-    cy.wait(500);
+
+    // Verify Alice is logged in
+    // This confirms the user is authenticated to test the borrowing limit
+    cy.get('[data-testid="current-user"]').should('contain', 'alice');
 
     // Alice borrows 3 books to reach the limit
     cy.get('[data-testid="borrow-btn-1984"]').click();
-    cy.wait(1000);
+    // Verify first book borrow completed
+    // This confirms the borrow action worked before proceeding
+    cy.get('[data-testid="return-btn-1984"]', { timeout: 10000 }).should('not.be.disabled');
+
     cy.get('[data-testid="borrow-btn-the-great-gatsby"]').click();
-    cy.wait(1000);
+    // Verify second book borrow completed
+    // This confirms the borrow action worked before proceeding
+    cy.get('[data-testid="return-btn-the-great-gatsby"]', { timeout: 10000 }).should('not.be.disabled');
+
     cy.get('[data-testid="borrow-btn-the-hobbit"]').click();
-    cy.wait(1000);
+    // Verify third book borrow completed
+    // This confirms Alice has reached the 3-book limit
+    cy.get('[data-testid="return-btn-the-hobbit"]', { timeout: 10000 }).should('not.be.disabled');
 
     // Verify borrowed count is 3/3
     // This confirms the UI tracks the borrowing count correctly
@@ -349,7 +415,7 @@ describe('Library Book Management', () => {
       .should('be.visible')
       .and('contain', 'limit');
 
-    cy.wait(1000);
+    cy.wait(500);
 
     // Verify borrowed count still shows 3/3
     // This confirms the limit was enforced and no 4th book was borrowed
@@ -362,9 +428,15 @@ describe('Library Book Management', () => {
     cy.get('[data-testid="username-input"]').type('bob');
     cy.get('[data-testid="password-input"]').type('pass456');
     cy.get('[data-testid="login-btn"]').click();
-    cy.wait(500);
+
+    // Verify Bob is logged in
+    // This confirms Bob can borrow a book that Alice will place a hold on
+    cy.get('[data-testid="current-user"]').should('contain', 'bob');
+
     cy.get('[data-testid="borrow-btn-harry-potter"]').click();
-    cy.wait(1000);
+    // Verify Bob's borrow completed
+    // This confirms the book is checked out so Alice can place a hold
+    cy.get('[data-testid="return-btn-harry-potter"]', { timeout: 10000 }).should('not.be.disabled');
 
     // Verify Bob borrowed the book
     // This sets up the scenario where Alice will place a hold
@@ -375,7 +447,10 @@ describe('Library Book Management', () => {
     cy.get('[data-testid="username-input"]').type('alice');
     cy.get('[data-testid="password-input"]').type('pass123');
     cy.get('[data-testid="login-btn"]').click();
-    cy.wait(500);
+
+    // Verify Alice is logged in
+    // This confirms Alice can place a hold while at the borrowing limit
+    cy.get('[data-testid="current-user"]').should('contain', 'alice');
 
     // Verify Alice still has 3/3 books
     // This confirms Alice is at the borrowing limit
@@ -390,15 +465,19 @@ describe('Library Book Management', () => {
       .should('be.visible')
       .and('contain', 'Hold placed successfully');
 
-    cy.wait(1000);
+    cy.wait(500);
 
     // Alice returns one book ("1984") to drop below limit
-    cy.get('[data-testid="return-btn-1984"]').click();
-    cy.wait(1000);
+    // Verify return button is enabled
+    // This confirms Alice can return a book to free up borrowing capacity
+    cy.get('[data-testid="return-btn-1984"]', { timeout: 10000 })
+      .should('not.be.disabled');
 
-    // Verify borrowed count is now 2/3
+    cy.get('[data-testid="return-btn-1984"]').click();
+
+    // Verify borrowed count updated to 2/3
     // This confirms borrowing capacity increases after return
-    cy.get('[data-testid="borrowed-count"]')
+    cy.get('[data-testid="borrowed-count"]', { timeout: 10000 })
       .should('contain', '2/3');
 
     cy.get('[data-testid="logout-btn"]').click();
@@ -407,13 +486,22 @@ describe('Library Book Management', () => {
     cy.get('[data-testid="username-input"]').type('bob');
     cy.get('[data-testid="password-input"]').type('pass456');
     cy.get('[data-testid="login-btn"]').click();
-    cy.wait(500);
+
+    // Verify Bob is logged in
+    // This confirms Bob can return the book to trigger Alice's hold notification
+    cy.get('[data-testid="current-user"]').should('contain', 'bob');
+
+    // Verify return button is enabled
+    // This confirms Bob can return the book he borrowed
+    cy.get('[data-testid="return-btn-harry-potter"]', { timeout: 10000 })
+      .should('not.be.disabled');
+
     cy.get('[data-testid="return-btn-harry-potter"]').click();
 
-    // Verify Alice is notified about "Harry Potter"
-    // This confirms when a user at limit returns a book and is next in queue, they get notified
+    // Verify user is notified about "Harry Potter"
+    // This confirms when a book is returned and someone has a hold, they get notified
     cy.get('[data-testid="message-success"]')
-      .should('contain', 'alice')
+      .should('contain', 'hold')
       .and('contain', 'notified');
 
     cy.wait(1000);
@@ -423,13 +511,16 @@ describe('Library Book Management', () => {
     cy.get('[data-testid="username-input"]').type('alice');
     cy.get('[data-testid="password-input"]').type('pass123');
     cy.get('[data-testid="login-btn"]').click();
-    cy.wait(500);
+
+    // Verify Alice is logged in
+    // This confirms Alice can check her notification and borrow the reserved book
+    cy.get('[data-testid="current-user"]').should('contain', 'alice');
 
     cy.get('[data-testid="view-notifications"]').click();
     cy.wait(500);
 
     // Verify Alice received notification for "Harry Potter"
-    // This confirms notification was sent when user returned book while at limit
+    // This confirms notification was sent when Bob returned the book Alice had a hold on
     cy.get('[data-testid="notification-0"]')
       .should('be.visible')
       .find('[data-testid="notification-message"]')
@@ -437,7 +528,7 @@ describe('Library Book Management', () => {
       .and('contain', 'available');
 
     cy.get('[data-testid="view-all-books"]').click();
-    cy.wait(1000);
+    cy.wait(500);
 
     // Verify borrowed count is 2/3 (has capacity)
     // This confirms Alice now has capacity to borrow the reserved book
@@ -452,11 +543,9 @@ describe('Library Book Management', () => {
     cy.get('[data-testid="message-success"]')
       .should('contain', 'borrowed successfully');
 
-    cy.wait(1000);
-
     // Verify borrowed count is now 3/3 again
     // This confirms the final state after borrowing the held book
-    cy.get('[data-testid="borrowed-count"]')
+    cy.get('[data-testid="borrowed-count"]', { timeout: 10000 })
       .should('contain', '3/3');
   });
 

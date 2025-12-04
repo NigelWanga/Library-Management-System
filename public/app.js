@@ -22,7 +22,6 @@ async function checkAuth() {
     const data = await response.json();
 
     if (!data.loggedIn) {
-      // Not logged in - redirect to login page once
       if (window.location.pathname !== '/') {
         window.location.replace('/');
       }
@@ -36,7 +35,6 @@ async function checkAuth() {
     }
   } catch (error) {
     console.error('Auth check failed:', error);
-    // Only redirect if not already on login page
     if (window.location.pathname !== '/') {
       window.location.replace('/');
     }
@@ -48,10 +46,8 @@ async function checkAuth() {
 // ============================================
 
 function setupEventListeners() {
-  // Logout button
   document.getElementById('logout-btn').addEventListener('click', logout);
 
-  // Navigation buttons
   document.querySelectorAll('.nav-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
       const view = e.currentTarget.dataset.view;
@@ -65,19 +61,16 @@ function setupEventListeners() {
 // ============================================
 
 function switchView(viewName) {
-  // Update active nav button
   document.querySelectorAll('.nav-btn').forEach(btn => {
     btn.classList.remove('active');
   });
   document.querySelector(`[data-view="${viewName}"]`).classList.add('active');
 
-  // Update active view
   document.querySelectorAll('.view').forEach(view => {
     view.classList.remove('active');
   });
   document.getElementById(`${viewName}-view`).classList.add('active');
 
-  // Load data for the view
   if (viewName === 'all-books') {
     loadBooks();
   } else if (viewName === 'my-books') {
@@ -92,8 +85,9 @@ function switchView(viewName) {
 // ============================================
 
 async function loadData() {
-  await loadBooks();
+  // Load borrowed books first so renderBooks() has accurate data
   await loadBorrowedBooks();
+  await loadBooks();
   await loadNotifications();
 }
 
@@ -144,16 +138,17 @@ function renderBooks() {
     return;
   }
 
-  container.innerHTML = books.map(book => {
-    const isBorrowed = borrowedBooks.some(b => b.title === book.title);
+  // Create a Set of borrowed book titles for fast lookup
+  const borrowedTitles = new Set(borrowedBooks.map(b => b.title));
 
-    // Can borrow if:
-    // 1. Book status is "Available" and not already borrowed and under limit
-    // 2. Book is "On Hold" for current user and not already borrowed and under limit
+  container.innerHTML = books.map(book => {
+    const isBorrowedByMe = borrowedTitles.has(book.title);
     const isReservedForMe = book.onHoldBy === currentUser;
-    const canBorrow = ((book.status === 'Available' || isReservedForMe) && !isBorrowed && borrowedBooks.length < 3);
-    const canReturn = isBorrowed;
-    const canHold = book.status !== 'Available' && !isBorrowed && !isReservedForMe;
+
+    // Button logic - allow clicking borrow even at limit so server can return error message
+    const canBorrow = (book.status === 'Available' || isReservedForMe) && !isBorrowedByMe;
+    const canReturn = isBorrowedByMe;
+    const canHold = book.status === 'Checked Out' && !isBorrowedByMe && !isReservedForMe;
 
     const statusClass = book.status === 'Available' ? 'status-available' :
                        book.status === 'Checked Out' ? 'status-checked-out' :
@@ -170,7 +165,7 @@ function renderBooks() {
           <button
             class="btn btn-primary"
             data-testid="borrow-btn-${book.title.replace(/\s+/g, '-').toLowerCase()}"
-            onclick="borrowBook('${book.title}')"
+            onclick="borrowBook('${book.title.replace(/'/g, "\\'")}')"
             ${!canBorrow ? 'disabled' : ''}
           >
             Borrow
@@ -178,7 +173,7 @@ function renderBooks() {
           <button
             class="btn btn-hold"
             data-testid="hold-btn-${book.title.replace(/\s+/g, '-').toLowerCase()}"
-            onclick="placeHold('${book.title}')"
+            onclick="placeHold('${book.title.replace(/'/g, "\\'")}')"
             ${!canHold ? 'disabled' : ''}
           >
             Place Hold
@@ -186,7 +181,7 @@ function renderBooks() {
           <button
             class="btn btn-return"
             data-testid="return-btn-${book.title.replace(/\s+/g, '-').toLowerCase()}"
-            onclick="returnBook('${book.title}')"
+            onclick="returnBook('${book.title.replace(/'/g, "\\'")}')"
             ${!canReturn ? 'disabled' : ''}
           >
             Return
@@ -214,7 +209,7 @@ function renderBorrowedBooks() {
       </div>
       <button
         class="btn btn-return"
-        onclick="returnBook('${book.title}')"
+        onclick="returnBook('${book.title.replace(/'/g, "\\'")}')"
         data-testid="return-borrowed-btn-${book.title.replace(/\s+/g, '-').toLowerCase()}"
       >
         Return Book
@@ -278,7 +273,6 @@ async function borrowBook(bookTitle) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ bookTitle })
     });
-
     const result = await response.json();
 
     if (result.success) {
@@ -299,7 +293,6 @@ async function returnBook(bookTitle) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ bookTitle })
     });
-
     const result = await response.json();
 
     if (result.success) {
@@ -320,7 +313,6 @@ async function placeHold(bookTitle) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ bookTitle })
     });
-
     const result = await response.json();
 
     if (result.success) {
