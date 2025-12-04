@@ -8,7 +8,7 @@ describe('Library Book Management', () => {
   });
 
   // ============================================
-  // SCENARIO 1: Basic Borrow-Return Cycle (10%)
+  // SCENARIO 1: Basic Borrow-Return Cycle
   // ============================================
 
   it('should demonstrate basic borrow-return cycle where borrowed book becomes unavailable to other users', () => {
@@ -143,7 +143,7 @@ describe('Library Book Management', () => {
   });
 
   // ============================================
-  // SCENARIO 2: Multiple Holds Queue Processing (45%)
+  // SCENARIO 2: Multiple Holds Queue Processing
   // ============================================
 
   it('should process hold queue in FIFO order and notify correct users', () => {
@@ -371,7 +371,7 @@ describe('Library Book Management', () => {
   });
 
   // ============================================
-  // SCENARIO 3: Borrowing Limit and Hold Interactions (45%)
+  // SCENARIO 3: Borrowing Limit and Hold Interactions
   // ============================================
 
   it('should enforce 3-book limit while allowing holds and processing them when capacity opens', () => {
