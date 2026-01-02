@@ -1,5 +1,5 @@
 # Library Management System
-This is a full-stack application built using Java, JavaScript, and Cypress, following BDD (Behavior-Driven Development) and TDD (Test-Driven Development) principles.
+This is a full-stack application built using Java, JavaScript, and Cypress, following BDD (Behaviour-Driven Development) and TDD (Test-Driven Development) principles.
 
 The system manages library operations, including borrowing and returning books, user role management, and availability tracking, while ensuring correctness through automated unit and end-to-end tests.
 
